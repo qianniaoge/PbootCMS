@@ -3228,10 +3228,7 @@ class ParserController extends Controller
                 $danger = false;
                 
                 $white_fun = array(
-                    'date',
-                    'in_array',
-                    'explode',
-                    'implode'
+                    'date'
                 );
                 
                 // 还原可能包含的保留内容，避免判断失效

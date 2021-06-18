@@ -2,6 +2,8 @@
 官方网站：https://www.pbootcms.com
 标签手册：https://www.pbootcms.com/docs.html
 ##########################################
+PbootCMS V3.0.5 build 2021-06-18
+1、修复系统存在的安全漏洞（重要）；
 
 PbootCMS V3.0.4 build 2021-02-14
 1、新增{pboot:sql sql="语句"}[sql:字段]{/pboot:sql}万能循环标签；

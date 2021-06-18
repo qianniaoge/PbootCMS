@@ -193,7 +193,7 @@ class ConfigController extends Controller
         
         if ($key == 'home_upload_ext') {
             // 不允许特殊扩展
-            if (preg_match('/(php|jsp|asp|exe|sh|cmd|vb|vbs)/i', $value)) {
+            if (preg_match('/(php|jsp|asp|exe|sh|cmd|vb|vbs|phtml)/i', $value)) {
                 return;
             }
         }

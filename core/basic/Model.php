@@ -172,7 +172,7 @@ class Model
     /**
      * 内容输出
      *
-     * @param mixed $data            
+     * @param mixed $data
      * @return mixed
      */
     final protected function outData($result)
@@ -232,7 +232,7 @@ class Model
     /**
      * 连贯操作：是否自动插入时间
      *
-     * @param string $flag            
+     * @param string $flag
      * @return \core\basic\Model
      */
     final public function autoTime($flag = true)
@@ -852,7 +852,7 @@ class Model
     /**
      * 连贯操作：待插入或更新数据数组，分解insert、update函数，实现 table($table)->data($data)->insert();
      *
-     * @param array $data            
+     * @param array $data
      * @return \core\basic\Model
      */
     final public function data($data)
@@ -887,7 +887,7 @@ class Model
     /**
      * 连贯操作：用于从一个表复制信息到另一个表 ，实现INSERT INTO SELECT的功能
      *
-     * @param string $subSql            
+     * @param string $subSql
      */
     final public function from($subSql)
     {
@@ -1251,6 +1251,7 @@ class Model
         }
         
         $sql = preg_replace_r('/pboot:if/i', 'pboot@if', $sql); // 过滤插入cms条件语句
+        $sql = preg_replace_r('/pboot:sql/i', 'pboot@sql', $sql); // 过滤插入cms条件语句
         return $this->getDb()->amd($sql);
     }
 
@@ -1318,6 +1319,7 @@ class Model
         $this->sql['value'] = $update_string;
         $sql = $this->buildSql($this->updateSql);
         $sql = preg_replace_r('/pboot:if/i', 'pboot@if', $sql); // 过滤插入cms条件语句
+        $sql = preg_replace_r('/pboot:sql/i', 'pboot@sql', $sql); // 过滤插入cms条件语句
         return $this->getDb()->amd($sql);
     }
 
