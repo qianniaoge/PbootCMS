@@ -185,6 +185,10 @@ class ContentSortController extends Controller
                 $gtype = post('gtype', 'int') ?: 4;
                 $gnote = post('gnote');
                 
+                $def1 = post('def1');
+                $def2 = post('def2');
+                $def3 = post('def3');
+                
                 if (! $scode) {
                     alert_back('编码不能为空！');
                 }
@@ -244,6 +248,9 @@ class ContentSortController extends Controller
                     'gtype' => $gtype,
                     'gnote' => $gnote,
                     'subname' => $subname,
+                    'def1' => $def1,
+                    'def2' => $def2,
+                    'def3' => $def3,
                     'filename' => $filename,
                     'outlink' => $outlink,
                     'ico' => $ico,
@@ -395,6 +402,10 @@ class ContentSortController extends Controller
             $gtype = post('gtype', 'int') ?: 4;
             $gnote = post('gnote');
             
+            $def1 = post('def1');
+            $def2 = post('def2');
+            $def3 = post('def3');
+            
             if (! $pcode) { // 父编码默认为0
                 $pcode = 0;
             }
@@ -442,6 +453,9 @@ class ContentSortController extends Controller
                 'gtype' => $gtype,
                 'gnote' => $gnote,
                 'subname' => $subname,
+                'def1' => $def1,
+                'def2' => $def2,
+                'def3' => $def3,
                 'filename' => $filename,
                 'outlink' => $outlink,
                 'ico' => $ico,
