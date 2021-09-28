@@ -18,6 +18,9 @@ class AdminController extends Controller
         // 自动缓存基础信息
         cache_config();
         
+        // 从配置文件读取cmsname参数来设置系统名称
+        define("CMSNAME", $this->config("cmsname") ?: 'PbootCMS');
+        
         // 检测登录，未登录跳转登录页面，已登录执行数据处理
         if ($this->checkLogin()) {
             // 权限检测

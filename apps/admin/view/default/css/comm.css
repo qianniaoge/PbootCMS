@@ -7,6 +7,7 @@
 }
 .layui-layout-admin .layui-body {
 	top: 50px;
+	bottom:0;
 }
 .layui-layout-admin .layui-logo {
 	color: #fff;

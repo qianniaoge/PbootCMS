@@ -55,6 +55,7 @@
 		 </div>
 	 </fieldset>
 	 
+	 {if(CMSNAME=='PbootCMS')}
 	 <div class="layui-row layui-col-space10">
 	 	<div class="layui-col-xs12 layui-col-md6">
 			<table class="layui-table table-two">
@@ -115,7 +116,7 @@
 				  <tbody>
 				  	<tr>
 	                    <th>系统名称</th>
-	                    <td>PbootCMS企业网站开发建设管理系统</td>
+	                    <td>{CMSNAME}企业网站开发建设管理系统</td>
 	                </tr>
 	
 	                <tr>
@@ -126,32 +127,31 @@
 				  	<tr>
 	                    <th>源码下载</th>
 	                    <td>
-	                    	<a href="https://gitee.com/hnaoyun/PbootCMS/" style="color:#666" target="_blank">Gitee</a> | 
-	                    	<a href="https://github.com/hnaoyun/PbootCMS/" style="color:#666" target="_blank">Github</a>
+	                    	<a href="https://gitee.com/hnaoyun/PbootCMS/" style="color:#666" target="_blank">Gitee</a>
 	                    </td>
 	                </tr>
 	                
 	                <tr>
 	                    <th>系统开发</th>
-	                    <td>星梦开源团队</td>
+	                    <td>星梦</td>
 	                </tr>
 	                
 	                <tr>
-	                    <th>开源协议</th>
-	                    <td title="开源协议Apache License概述 ：你可以用这代码并任意修改，你也可以任意商用及闭源，但是如果开源你必须保留我写的声明；你可以改我的代码，但是如果开源你必须写清楚你改了哪些；你可以加新的协议要求，但不能与我所公布的协议要求产生冲突；你用这代码干什么我不管，但是你不能让我承担任何责任。   ">Apache Licene 2.0</td>
+	                    <th>版权协议</th>
+	                    <td><a href="http://www.pbootcms.com/system-usage/277.html" style="color:#666" target="_blank">点击查看</a></td>
 	                </tr>
 	               
 	                <tr>
 	                    <th>技术交流群</th>
-	                    <td>137083872、636759350、511953276、964501393、686979800</td>
+	                    <td>822430453、794519782</td>
 	                </tr>
 	                
 	                <tr>
 	                    <th>友情贡献者</th>
 	                    <td>
-	                    	感谢晨星傲月、富派仙尊、紫雨、远方的回忆、果爸、Jiang、陈杭、书生会武术、六水水炸了、极点科技-周锦程、金科一生所爱、骑着蚂蚁的大象、没皮的小芒果、zhpw35等网友的积极贡献；
-	                    	感谢交流群各网友的大力支持；
+	                    	感谢交流群各网友对PbootCMS发展的大力支持；
 	                    	感谢LayUI提供的前端框架；
+	                    	感谢百度提供的富文本编辑器；
 	                    	感谢星梦开发团队的日夜奋斗。
 	                    </td>
 	                </tr>
@@ -159,6 +159,7 @@
 			</table>
 	 	</div>
 	 </div>
+	 {/if}
 </div>
 <script>
 $.ajax({
