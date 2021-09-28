@@ -748,8 +748,14 @@
 		                				}else{
 		                					$pics = array();
 		                				}
-		                				foreach ($pics as $value) {
-		                					echo "<dl><dt><img src='".SITE_DIR.$value."' data-url='".$value."'></dt><dd>删除</dd></dl></dl>";
+		                				if([$content->picstitle]){
+		                					$picstitle=explode(',',[$content->picstitle]);
+		                				}else{
+		                					$picstitle = array();
+		                				}
+		                				foreach ($pics as $key=>$value) {
+		                					//需要留一个空，不然被解析为标签了
+		                					echo "<dl><dt><img src='".SITE_DIR.$value."' data-url='".$value."'></dt><dd>删除</dd><dt><input type='text' value='".$picstitle[$key ]."' name='picstitle[]' style='width:95%' /></dt></dl>";
 	          							}
 	         						 {/php}
          						 </div>

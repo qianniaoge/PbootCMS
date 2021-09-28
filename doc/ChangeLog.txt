@@ -2,6 +2,10 @@
 官方网站：https://www.pbootcms.com
 标签手册：https://www.pbootcms.com/docs.html
 ##########################################
+
+PbootCMS V3.0.6 build 2021-09-28
+1、新增文章多图标题功能,前台标签:[pics:title]；
+
 PbootCMS V3.0.5 build 2021-06-18
 1、修复系统存在的安全漏洞（重要）；
 

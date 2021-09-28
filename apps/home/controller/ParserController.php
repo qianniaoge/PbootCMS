@@ -1529,10 +1529,12 @@ class ParserController extends Controller
                 }
                 
                 // 读取内容多图
-                if (! ! $pics = $this->model->getContentPics(escape_string($id))) {
-                    $pics = explode(',', $pics);
+                if (! ! $rs = $this->model->getContentPics(escape_string($id))) {
+                    $pics = explode(',', $rs->pics);
+                    $picstitle = explode(',', $rs->picstitle);
                 } else {
                     $pics = array();
+                    $picstitle = array();
                 }
                 
                 // 无图直接替换为空并跳过
@@ -1550,8 +1552,10 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 $key = 1;
-                foreach ($pics as $value) { // 按查询图片条数循环
+                foreach ($pics as $key => $value) { // 按查询图片条数循环
                     $one_html = $matches[2][$i];
+                    if (! $value)
+                        continue;
                     for ($j = 0; $j < $count2; $j ++) { // 循环替换数据
                         $params = $this->parserParam($matches2[2][$j]);
                         switch ($matches2[1][$j]) {
@@ -1571,6 +1575,9 @@ class ParserController extends Controller
                                 } else {
                                     $one_html = str_replace($matches2[0][$j], '', $one_html);
                                 }
+                                break;
+                            case 'title':
+                                $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, isset($picstitle[$key]) ? $picstitle[$key] : ''), $one_html);
                                 break;
                         }
                     }

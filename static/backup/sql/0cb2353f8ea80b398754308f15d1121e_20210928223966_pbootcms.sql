@@ -158,6 +158,7 @@ CREATE TABLE `ay_content` (
   `date` datetime NOT NULL COMMENT '发布日期',
   `ico` varchar(100) NOT NULL COMMENT '缩略图',
   `pics` varchar(1000) NOT NULL COMMENT '多图片',
+  `picstitle` varchar(1000) NOT NULL COMMENT '多图片标题',
   `content` mediumtext NOT NULL COMMENT '内容',
   `tags` varchar(500) NOT NULL COMMENT 'tag关键字',
   `enclosure` varchar(100) NOT NULL COMMENT '附件',

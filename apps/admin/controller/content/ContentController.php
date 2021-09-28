@@ -91,6 +91,13 @@ class ContentController extends Controller
             $date = post('date');
             $ico = post('ico');
             $pics = post('pics');
+            
+            // 获取多图标题
+            $picstitle = post('picstitle');
+            if ($picstitle) {
+                $picstitle = implode(',', $picstitle);
+            }
+            
             $content = post('content');
             $tags = str_replace('，', ',', post('tags'));
             $enclosure = post('enclosure');
@@ -152,6 +159,7 @@ class ContentController extends Controller
                 'date' => $date,
                 'ico' => $ico,
                 'pics' => $pics,
+                'picstitle' => $picstitle,
                 'content' => $content,
                 'tags' => $tags,
                 'enclosure' => $enclosure,
@@ -400,6 +408,13 @@ class ContentController extends Controller
             $date = post('date');
             $ico = post('ico');
             $pics = post('pics');
+            
+            // 获取多图标题
+            $picstitle = post('picstitle');
+            if ($picstitle) {
+                $picstitle = implode(',', $picstitle);
+            }
+            
             $content = post('content');
             $tags = str_replace('，', ',', post('tags'));
             $enclosure = post('enclosure');
@@ -456,6 +471,7 @@ class ContentController extends Controller
                 'date' => $date,
                 'ico' => $ico,
                 'pics' => $pics,
+                'picstitle' => $picstitle,
                 'content' => $content,
                 'tags' => $tags,
                 'enclosure' => $enclosure,

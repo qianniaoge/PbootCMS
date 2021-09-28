@@ -133,7 +133,9 @@ layui.use(['element','upload','laydate','form'], function(){
 		   }else{
 			   files+=res.data[0];
 		   }
-		   html += "<dl><dt><img src='"+sitedir+res.data[0]+"' data-url='"+res.data[0]+"'></dt><dd>删除</dd></dl>";
+		   html += "<dl><dt><img src='"+sitedir+res.data[0]+"' data-url='"+res.data[0]+"'></dt><dd>删除</dd>" +
+		   		"<dt><input type='text' name='picstitle[]' style='width:95%' /></dt>"+		
+		   		"</dl>";
 	   }else{
 		   layer.msg('有文件上传失败：'+res.data); 
 	   } 
