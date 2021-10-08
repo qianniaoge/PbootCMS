@@ -209,8 +209,8 @@ class ContentSortController extends Controller
                     alert_back('栏目类型不能为空！');
                 }
                 
-                if ($filename && ! preg_match('/^[a-zA-Z0-9\-]+$/', $filename)) {
-                    alert_back('URL名称只允许字母、数字、横线组成!');
+                if ($filename && ! preg_match('/^[a-zA-Z0-9\-\/]+$/', $filename)) {
+                    alert_back('URL名称只允许字母、数字、横线、斜线组成!');
                 }
                 
                 if ($filename && $this->model->checkUrlname($filename)) {
@@ -422,8 +422,8 @@ class ContentSortController extends Controller
                 alert_back('栏目类型不能为空！');
             }
             
-            if ($filename && ! preg_match('/^[a-zA-Z0-9\-]+$/', $filename)) {
-                alert_back('URL名称只允许字母、数字、横线组成!');
+            if ($filename && ! preg_match('/^[a-zA-Z0-9\-\/]+$/', $filename)) {
+                alert_back('URL名称只允许字母、数字、横线、斜线组成!');
             }
             
             if ($filename && $this->model->checkUrlname($filename)) {

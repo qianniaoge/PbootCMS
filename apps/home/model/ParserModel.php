@@ -31,6 +31,9 @@ class ParserModel extends Model
     // 获取模型数据
     public function checkModelUrlname($urlname)
     {
+        if ($urlname == 'list' || $urlname == 'about') {
+            return true;
+        }
         return parent::table('ay_model')->where("urlname='$urlname'")->find();
     }
 

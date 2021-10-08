@@ -64,33 +64,7 @@ class IndexController extends Controller
         }
         
         if (isset($path) && is_array($path)) {
-            
-            // 地址分隔符
-            $url_break_char = $this->config('url_break_char') ?: '_';
-            
-            // 判断第一个参数中组合信息
-            if (strpos($path[0], $url_break_char)) {
-                $param = explode($url_break_char, $path[0]);
-            } else {
-                $param[] = $path[0];
-            }
-            
-            // 判断第一个参数是模型还是自定义分类
-            if (! ! ($model = $this->model->checkModelUrlname($param[0])) || preg_match('/^(list_[0-9]+)|(^about_[0-9]+)/', $path[0])) {
-                $scode = $param[1];
-                if (isset($param[2])) {
-                    $_GET['page'] = $param[2]; // 分页
-                }
-            } else {
-                define('CMS_PAGE_CUSTOM', true); // 自定义名称后分页比正常少了一个参数 (list_1_1=>product_1)
-                $scode = $param[0];
-                if (isset($param[1])) {
-                    $_GET['page'] = $param[1]; // 分页
-                }
-            }
-            
-            // 路由
-            switch ($param[0]) {
+            switch ($path[0]) {
                 case 'search':
                 case 'keyword':
                     $search = new SearchController();
@@ -123,13 +97,48 @@ class IndexController extends Controller
                     $comment->{$path[1]}();
                     break;
                 default:
-                    if (get($param[0])) {
+                    if (get($path[0])) {
                         $this->getIndex();
                     } else {
+                        // 优先判断全路径
+                        $fullurl = implode('/', $path);
                         
-                        if (count($path) > 1) {
+                        // 详情页匹配前段栏目路径
+                        $sorturl = $path;
+                        $contenturl = array_pop($sorturl);
+                        $sorturl = implode('/', $sorturl);
+                        
+                        $url_break_char = $this->config('url_break_char') ?: '_';
+                        
+                        // 开始进行匹配
+                        if (! ! $fullurl && ! ! $sort = $this->model->getSort($fullurl)) { // 栏目名称
+                            $iscontent = false;
+                        } elseif (! ! $sorturl && ! ! $sorts = $this->model->getSort($sorturl)) { // 栏目名称/内容名称或ID
+                            $data = $this->model->getContent($contenturl);
+                            $iscontent = true;
+                        } elseif (preg_match('/^list_[0-9]+|about_[0-9]+$/', $sorturl)) { // 模型默认名称_栏目ID/内容名称或ID
+                            $data = $this->model->getContent($contenturl);
+                            $iscontent = true;
+                        } else {
+                            preg_match('/^([a-zA-Z0-9\-\/]+)(' . $url_break_char . '([0-9]+))?' . $url_break_char . '([0-9]+)$/i', $fullurl, $matchs);
+                            
+                            if ($matchs[2] && $model = $this->model->checkModelUrlname($matchs[1])) { // 模型名称_栏目ID_分页
+                                define('CMS_PAGE_CUSTOM', false);
+                                $scode = $matchs[3]; // 分类
+                                $sort = $this->model->getSort($scode);
+                                $_GET['page'] = $matchs[4]; // 分页
+                            } elseif ((! ! $model = $this->model->checkModelUrlname($matchs[1])) && ! ! $sort = $this->model->getSort($matchs[4])) { // 模型名称_栏目ID
+                                $scode = $matchs[4]; // 分类
+                            } elseif (! ! $sort = $this->model->getSort($matchs[1])) { // 栏目名称_分页
+                                define('CMS_PAGE_CUSTOM', true);
+                                $scode = $matchs[1]; // 分类
+                                $_GET['page'] = $matchs[4]; // 分页
+                            }
+                        }
+                        
+                        if ($iscontent) {
                             define('CMS_PAGE', false); // 使用普通分页处理模型
-                            if (! ! ($data = $this->model->getContent($path[1])) && ($data->scode == $scode || $data->sortfilename == $scode) && $data->type == 2) {
+                            if (! ! $data) {
                                 if ($data->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $data->acode); // 调用内容语言与当前语言不一致时，自动切换语言
                                 }
@@ -139,7 +148,7 @@ class IndexController extends Controller
                             }
                         } else {
                             define('CMS_PAGE', true); // 使用cms分页处理模型
-                            if (! ! $sort = $this->model->getSort($scode)) {
+                            if (! ! $sort) {
                                 if ($sort->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $sort->acode); // 调用栏目语言与当前语言不一致时，自动切换语言
                                 }
@@ -149,7 +158,7 @@ class IndexController extends Controller
                                     $this->getList($sort);
                                 }
                             } else {
-                                _404('您访问的栏目不存在，请核对后重试！');
+                                _404('您访问的页面不存在，请核对后重试！');
                             }
                         }
                     }

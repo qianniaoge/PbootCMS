@@ -2,6 +2,8 @@
 官方网站：https://www.pbootcms.com
 标签手册：https://www.pbootcms.com/docs.html
 ##########################################
+PbootCMS V3.0.7 build 2021-10-09
+1、新增栏目自定义多层级路径的支持；
 
 PbootCMS V3.0.6 build 2021-09-29
 1、新增文章多图标题功能,前台标签:[pics:title]；
