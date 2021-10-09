@@ -361,7 +361,7 @@ function parse_info_tpl($info_tpl, $string, $jump_url = null, $time = 0)
         $tpl_content = str_replace('{time}', $time, $tpl_content);
         $tpl_content = str_replace('{sitedir}', SITE_DIR, $tpl_content);
         $tpl_content = str_replace('{coredir}', CORE_DIR, $tpl_content);
-        $tpl_content = str_replace('{appversion}', APP_VERSION, $tpl_content);
+        $tpl_content = str_replace('{appversion}', APP_VERSION . '-' . RELEASE_TIME, $tpl_content);
         $tpl_content = str_replace('{serveros}', PHP_OS, $tpl_content);
         $tpl_content = str_replace('{serversoft}', $_SERVER['SERVER_SOFTWARE'], $tpl_content);
         return $tpl_content;
