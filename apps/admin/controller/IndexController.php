@@ -268,6 +268,20 @@ class IndexController extends Controller
         }
     }
 
+    // 清理会话
+    public function clearSession()
+    {
+        $rs = path_delete(RUN_PATH . '/session');
+        
+        if ($rs) {
+            $this->log('清理会话成功！');
+            alert_back('清理会话成功！');
+        } else {
+            $this->log('清理会话失败！');
+            alert_back('清理会话失败！');
+        }
+    }
+
     // 文件上传方法
     public function upload()
     {

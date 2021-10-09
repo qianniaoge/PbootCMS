@@ -173,6 +173,12 @@ class SingleController extends Controller
             $description = post('description');
             $status = post('status', 'int');
             
+            // 获取多图标题
+            $picstitle = post('picstitle');
+            if ($picstitle) {
+                $picstitle = implode(',', $picstitle);
+            }
+            
             if (! $title) {
                 alert_back('单页内容标题不能为空！');
             }
@@ -196,6 +202,7 @@ class SingleController extends Controller
                 'source' => $source,
                 'ico' => $ico,
                 'pics' => $pics,
+                'picstitle' => $picstitle,
                 'titlecolor' => $titlecolor,
                 'subtitle' => $subtitle,
                 'outlink' => $outlink,
