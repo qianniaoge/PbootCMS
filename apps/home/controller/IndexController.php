@@ -111,28 +111,39 @@ class IndexController extends Controller
                         $url_break_char = $this->config('url_break_char') ?: '_';
                         
                         // 开始进行匹配
-                        if (! ! $fullurl && ! ! $sort = $this->model->getSort($fullurl)) { // 栏目名称
+                        if (! ! $sort = $this->model->getSort($fullurl)) {
+                            // 栏目名称
                             $iscontent = false;
-                        } elseif (! ! $sorturl && ! ! $sorts = $this->model->getSort($sorturl)) { // 栏目名称/内容名称或ID
+                        } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $fullurl, $matchs) && ! ! $sort = $this->model->getSort($matchs[1])) {
+                            // 栏目名称_分页
+                            $iscontent = false;
+                            define('CMS_PAGE_CUSTOM', true);
+                            $_GET['page'] = $matchs[2]; // 分页
+                        } elseif (! ! $sorturl && ! ! $sort = $this->model->getSort($sorturl)) {
+                            // 栏目名称/内容名称或ID（要在第2个判断【栏目名称_分页】后）
                             $data = $this->model->getContent($contenturl);
                             $iscontent = true;
-                        } elseif (preg_match('/^list_[0-9]+|about_[0-9]+$/', $sorturl)) { // 模型默认名称_栏目ID/内容名称或ID
+                        } elseif (preg_match('/^list' . $url_break_char . '[0-9]+|about' . $url_break_char . '[0-9]+$/', $sorturl)) {
+                            // 模型默认名称_栏目ID/内容名称或ID
                             $data = $this->model->getContent($contenturl);
                             $iscontent = true;
                         } else {
                             preg_match('/^([a-zA-Z0-9\-\/]+)(' . $url_break_char . '([0-9]+))?' . $url_break_char . '([0-9]+)$/i', $fullurl, $matchs);
                             
-                            if ($matchs[2] && $model = $this->model->checkModelUrlname($matchs[1])) { // 模型名称_栏目ID_分页
+                            if ($matchs[2] && $model = $this->model->checkModelUrlname($matchs[1])) {
+                                // 模型名称_栏目ID_分页
                                 define('CMS_PAGE_CUSTOM', false);
-                                $scode = $matchs[3]; // 分类
-                                $sort = $this->model->getSort($scode);
+                                $sort = $this->model->getSort($matchs[3]);
                                 $_GET['page'] = $matchs[4]; // 分页
-                            } elseif ((! ! $model = $this->model->checkModelUrlname($matchs[1])) && ! ! $sort = $this->model->getSort($matchs[4])) { // 模型名称_栏目ID
-                                $scode = $matchs[4]; // 分类
-                            } elseif (! ! $sort = $this->model->getSort($matchs[1])) { // 栏目名称_分页
-                                define('CMS_PAGE_CUSTOM', true);
-                                $scode = $matchs[1]; // 分类
-                                $_GET['page'] = $matchs[4]; // 分页
+                            } elseif (! ! $model = $this->model->checkModelUrlname($matchs[1])) {
+                                // 模型名称_栏目ID
+                                $sort = $this->model->getSort($matchs[4]);
+                            } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $sorturl, $matchs)) {
+                                // 模型名称_栏目ID/内容名称或ID
+                                if (! ! $model = $this->model->checkModelUrlname($matchs[1])) {
+                                    $data = $this->model->getContent($contenturl);
+                                    $iscontent = true;
+                                }
                             }
                         }
                         
