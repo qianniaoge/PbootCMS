@@ -109,9 +109,8 @@ class Url
         if (! isset(self::$urls[md5($path . $suffix . $qs)])) {
             $url_rule_type = Config::get('url_rule_type') ?: 3;
             $url_rule_suffix = Config::get('url_rule_suffix') ?: '.html';
-            $url_rule_sort_suffix = Config::get('url_rule_sort_suffix');
             
-            if (($suffix === null && $url_rule_sort_suffix) || $suffix) {
+            if ($suffix === true) {
                 $suffix = $url_rule_suffix;
             } elseif ($suffix === false) {
                 $suffix = '';
@@ -119,7 +118,7 @@ class Url
                 $suffix = '/';
             }
             
-            $path = ltrim($path, '/');
+            $path = trim($path, '/');
             
             // 去除默认模块及控制器部分
             $path = str_replace('home/Index/', '', $path);

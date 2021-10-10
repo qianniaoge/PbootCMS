@@ -39,21 +39,12 @@ class IndexController extends Controller
             if ($url_rule_type == 2 && stripos(URL, $_SERVER['SCRIPT_NAME']) !== false) { // 禁止伪静态时带index.php访问
                 _404('您访问的内容不存在，请核对后重试！');
             }
-            $path = explode('/', P);
-            if (! defined('URL_BIND')) {
-                array_shift($path); // 去除模块部分
-            }
+            $path = P;
         } elseif ($url_rule_type == 3 && isset($_SERVER["QUERY_STRING"]) && $qs = $_SERVER["QUERY_STRING"]) { // 采用简短传参模式
             parse_str($qs, $output);
             unset($output['page']); // 去除分页
             if ($output && ! current($output)) { // 第一个路径参数不能有值，否则非标准路径参数
                 $path = key($output); // 第一个参数为路径信息，注意PHP数组会自动将key点符号转换下划线
-                $path = trim($path, '/'); // 去除两端斜杠
-                $url_rule_suffix = substr($this->config('url_rule_suffix'), 1);
-                if (preg_match('/_' . $url_rule_suffix . '$/', $path) && (! ! $pos = strripos($path, '_' . $url_rule_suffix))) {
-                    $path = substr($path, 0, $pos); // 去扩展
-                }
-                $path = explode('/', $path);
             } elseif (get('tag')) { // 对于兼容模式tag需要自动跳转tag独立页面
                 $tag = new TagController();
                 $tag->index();
@@ -63,8 +54,21 @@ class IndexController extends Controller
             }
         }
         
-        if (isset($path) && is_array($path)) {
-            switch ($path[0]) {
+        // 地址去后缀，并且强制模式
+        $url_rule_suffix = substr($this->config('url_rule_suffix'), 1);
+        $url_ok = false;
+        if (preg_match('/(.*)(_|\.)' . $url_rule_suffix . '$/', $path, $matchs)) {
+            $path = $matchs[1];
+            $url_ok = true;
+        } elseif (preg_match('/^[\w\-\/]+\/$/', $path)) {
+            $url_ok = true;
+            $path = trim($path, '/');
+        }
+        $path_arr = $path ? explode('/', $path) : array();
+        
+        // 开始路由
+        if (isset($path_arr) && count($path_arr) > 0) {
+            switch ($path_arr[0]) {
                 case 'search':
                 case 'keyword':
                     $search = new SearchController();
@@ -75,7 +79,7 @@ class IndexController extends Controller
                     $msg->index();
                     break;
                 case 'form':
-                    $_GET['fcode'] = $path[1];
+                    $_GET['fcode'] = $path_arr[1];
                     $form = new FormController();
                     $form->index();
                     break;
@@ -90,31 +94,28 @@ class IndexController extends Controller
                     break;
                 case 'member':
                     $member = new MemberController();
-                    $member->{$path[1]}();
+                    $member->{$path_arr[1]}();
                     break;
                 case 'comment':
                     $comment = new CommentController();
-                    $comment->{$path[1]}();
+                    $comment->{$path_arr[1]}();
                     break;
                 default:
-                    if (get($path[0])) {
+                    if (get($path_arr[0])) {
                         $this->getIndex();
                     } else {
-                        // 优先判断全路径
-                        $fullurl = implode('/', $path);
                         
-                        // 详情页匹配前段栏目路径
-                        $sorturl = $path;
-                        $contenturl = array_pop($sorturl);
-                        $sorturl = implode('/', $sorturl);
-                        
+                        // 假设详情页地址，详情页匹配前段为栏目路径
+                        $temp = $path_arr;
+                        $contenturl = array_pop($temp);
+                        $sorturl = implode('/', $temp);
                         $url_break_char = $this->config('url_break_char') ?: '_';
                         
                         // 开始进行匹配
-                        if (! ! $sort = $this->model->getSort($fullurl)) {
+                        if (! ! $sort = $this->model->getSort($path)) {
                             // 栏目名称
                             $iscontent = false;
-                        } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $fullurl, $matchs) && ! ! $sort = $this->model->getSort($matchs[1])) {
+                        } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $path, $matchs) && ! ! $sort = $this->model->getSort($matchs[1])) {
                             // 栏目名称_分页
                             $iscontent = false;
                             define('CMS_PAGE_CUSTOM', true);
@@ -128,7 +129,7 @@ class IndexController extends Controller
                             $data = $this->model->getContent($contenturl);
                             $iscontent = true;
                         } else {
-                            preg_match('/^([a-zA-Z0-9\-\/]+)(' . $url_break_char . '([0-9]+))?' . $url_break_char . '([0-9]+)$/i', $fullurl, $matchs);
+                            preg_match('/^([a-zA-Z0-9\-\/]+)(' . $url_break_char . '([0-9]+))?' . $url_break_char . '([0-9]+)$/i', $path, $matchs);
                             
                             if ($matchs[2] && $model = $this->model->checkModelUrlname($matchs[1])) {
                                 // 模型名称_栏目ID_分页
@@ -149,7 +150,7 @@ class IndexController extends Controller
                         
                         if ($iscontent) {
                             define('CMS_PAGE', false); // 使用普通分页处理模型
-                            if (! ! $data) {
+                            if (! ! $data && $url_ok) {
                                 if ($data->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $data->acode); // 调用内容语言与当前语言不一致时，自动切换语言
                                 }
@@ -159,7 +160,8 @@ class IndexController extends Controller
                             }
                         } else {
                             define('CMS_PAGE', true); // 使用cms分页处理模型
-                            if (! ! $sort) {
+                            
+                            if (! ! $sort && $url_ok) {
                                 if ($sort->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $sort->acode); // 调用栏目语言与当前语言不一致时，自动切换语言
                                 }

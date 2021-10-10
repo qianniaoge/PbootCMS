@@ -173,7 +173,7 @@ class ContentSortController extends Controller
                 $contenttpl = basename(post('contenttpl'));
                 $status = post('status');
                 $subname = post('subname');
-                $filename = post('filename');
+                $filename = trim(post('filename'), '/');
                 $outlink = post('outlink');
                 $ico = post('ico');
                 $pic = post('pic');
@@ -389,7 +389,7 @@ class ContentSortController extends Controller
             $contenttpl = basename(post('contenttpl'));
             $status = post('status');
             $subname = post('subname');
-            $filename = post('filename');
+            $filename = trim(post('filename'), '/');
             $outlink = post('outlink');
             $ico = post('ico');
             $pic = post('pic');

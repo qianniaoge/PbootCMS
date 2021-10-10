@@ -49,6 +49,7 @@ function homeurl($url, $suffix = null, $qs = null)
 function error($string, $jump_url = null, $time = 2)
 {
     @ob_clean();
+    http_response_code(404);
     if (! $string)
         $string = '未知错误！';
     
@@ -721,8 +722,7 @@ function get_sms_balance(array $config)
 // 返回404页面,文件中可使用{info}替换提示信息
 function _404($string, $jump_url = null, $time = 2)
 {
-    header('HTTP/1.1 404 Not Found');
-    header('status: 404 Not Found');
+    http_response_code(404);
     $file_404 = ROOT_PATH . '/404.html';
     if (file_exists($file_404)) {
         echo parse_info_tpl($file_404, $string, $jump_url, $time);

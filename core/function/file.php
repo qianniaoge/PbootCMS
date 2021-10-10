@@ -182,10 +182,10 @@ function is_image($path)
 /**
  * 文件上传
  *
- * @param string $input_name表单名称            
- * @param string $file_ext允许的扩展名            
- * @param number $max_width最大宽度            
- * @param number $max_height最大高度            
+ * @param string $input_name表单名称
+ * @param string $file_ext允许的扩展名
+ * @param number $max_width最大宽度
+ * @param number $max_height最大高度
  * @return string 返回成功上传文件的路径数组
  */
 function upload($input_name, $file_ext = null, $max_width = null, $max_height = null, $watermark = false)
@@ -308,11 +308,11 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
  * *
  * 等比缩放图片
  *
- * @param string $src_image源图片路径            
- * @param string $out_image输出图像路径            
- * @param number $max_width最大宽            
- * @param number $max_height最大高            
- * @param number $img_quality图片质量            
+ * @param string $src_image源图片路径
+ * @param string $out_image输出图像路径
+ * @param number $max_width最大宽
+ * @param number $max_height最大高
+ * @param number $img_quality图片质量
  * @return boolean 返回是否成功
  */
 function resize_img($src_image, $out_image = null, $max_width = null, $max_height = null, $img_quality = 90)

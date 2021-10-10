@@ -42,12 +42,11 @@ class AboutController extends Controller
                 
                 $urlname = $data->urlname ?: 'about';
                 $url_break_char = $this->config('url_break_char') ?: '_';
-                $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
                 
                 if ($data->sortfilename) {
-                    $data->contentlink = Url::home($data->sortfilename, $url_rule_sort_suffix);
+                    $data->contentlink = Url::home($data->sortfilename);
                 } else {
-                    $data->contentlink = Url::home($urlname . $url_break_char . $data->scode, $url_rule_sort_suffix);
+                    $data->contentlink = Url::home($urlname . $url_break_char . $data->scode);
                 }
                 
                 $data->content = str_replace(STATIC_DIR . '/upload/', get_http_url() . STATIC_DIR . '/upload/', $data->content);

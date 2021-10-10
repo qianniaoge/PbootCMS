@@ -884,7 +884,7 @@ class ParserController extends Controller
                 $url_rule_type = $this->config('url_rule_type') ?: 3;
                 $url_rule_suffix = $this->config('url_rule_suffix') ?: '.html';
                 $url_break_char = $this->config('url_break_char') ?: '_';
-                $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? $url_rule_suffix : '/';
+                $url_rule_sort_suffix = '/';
                 
                 // 附加后缀及参数
                 if ($url_rule_type == 1 || $url_rule_type == 2) {
@@ -946,7 +946,7 @@ class ParserController extends Controller
                         $qs = http_build_query($output);
                         
                         if ($path && $qs) { // 重组地址
-                            $path = rtrim($path, '/') . '&' . $qs;
+                            $path = rtrim($path, '/') . '/&' . $qs;
                         } elseif ($qs) {
                             $path = SITE_INDEX_DIR . '/?' . $qs;
                         } elseif (! $path) {
@@ -983,7 +983,7 @@ class ParserController extends Controller
             $url_rule_type = $this->config('url_rule_type') ?: 3;
             $url_rule_suffix = $this->config('url_rule_suffix') ?: '.html';
             $url_break_char = $this->config('url_break_char') ?: '_';
-            $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? $url_rule_suffix : '/';
+            $url_rule_sort_suffix = '/';
             
             // 附加后缀及参数
             if ($url_rule_type == 1 || $url_rule_type == 2) {
@@ -1106,7 +1106,7 @@ class ParserController extends Controller
                                 $qs[$field] = $value;
                                 $qs = http_build_query($qs);
                                 if ($url_rule_type == 3 && $not_index) {
-                                    $link = rtrim($path, '/') . '&' . $qs;
+                                    $link = rtrim($path, '/') . '/&' . $qs;
                                 } else {
                                     $link = $path . '?' . $qs;
                                 }
@@ -3873,17 +3873,17 @@ class ParserController extends Controller
         if ($type == 1) {
             $urlname = $urlname ?: 'about';
             if ($sortfilename) {
-                $link = Url::home($sortfilename, $url_rule_sort_suffix);
+                $link = Url::home($sortfilename);
             } else {
-                $link = Url::home($urlname . $url_break_char . $scode, $url_rule_sort_suffix);
+                $link = Url::home($urlname . $url_break_char . $scode);
             }
         } else {
             $urlname = $urlname ?: 'list';
             if ($page == 'list') {
                 if ($sortfilename) {
-                    $link = Url::home($sortfilename, $url_rule_sort_suffix);
+                    $link = Url::home($sortfilename);
                 } else {
-                    $link = Url::home($urlname . $url_break_char . $scode, $url_rule_sort_suffix);
+                    $link = Url::home($urlname . $url_break_char . $scode);
                 }
             } elseif ($page == 'content') {
                 if ($sortfilename && $contentfilename) {
