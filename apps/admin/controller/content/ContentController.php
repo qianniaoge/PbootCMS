@@ -84,7 +84,7 @@ class ContentController extends Controller
             $title = post('title');
             $titlecolor = post('titlecolor');
             $subtitle = post('subtitle');
-            $filename = post('filename');
+            $filename = trim(post('filename'), '/');
             $author = post('author');
             $source = post('source');
             $outlink = post('outlink');
@@ -401,7 +401,7 @@ class ContentController extends Controller
             $title = post('title');
             $titlecolor = post('titlecolor');
             $subtitle = post('subtitle');
-            $filename = post('filename');
+            $filename = trim(post('filename'), '/');
             $author = post('author');
             $source = post('source');
             $outlink = post('outlink');
