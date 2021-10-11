@@ -4,7 +4,7 @@
  * @author XingMeng
  * @email hnxsh@foxmail.com
  * @date 2016年11月6日
- *  模板显示类 
+ *  模板显示类
  */
 namespace core\view;
 
@@ -112,7 +112,7 @@ class View
             $tpl_file = $this->tplPath . '/' . $file; // 模板文件
         }
         $note = Config::get('tpl_html_dir') ? '<br>同时检测到您系统中启用了模板子目录' . Config::get('tpl_html_dir') . '，请核对是否是此原因导致！' : '';
-        file_exists($tpl_file) ?: error('模板文件' . APP_THEME_DIR . '/' . $file . '不存在！' . $note);
+        file_exists($tpl_file) ?: error('模板文件' . $file . '不存在！' . $note);
         $tpl_c_file = $this->tplcPath . '/' . md5($tpl_file) . '.php'; // 编译文件
                                                                        
         // 当编译文件不存在，或者模板文件修改过，则重新生成编译文件
