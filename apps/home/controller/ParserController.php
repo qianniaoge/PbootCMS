@@ -3245,7 +3245,14 @@ class ParserController extends Controller
                 // 带有函数的条件语句进行安全校验
                 if (preg_match_all('/([\w]+)([\x00-\x1F\x7F\/\*\<\>\%\w\s\\\\]+)?\(/i', $matches[1][$i], $matches2)) {
                     foreach ($matches2[1] as $value) {
-                        if (function_exists($value) && ! in_array($value, $white_fun)) {
+                        if (function_exists(trim($value)) && ! in_array($value, $white_fun)) {
+                            $danger = true;
+                            break;
+                        }
+                    }
+                    
+                    foreach ($matches2[2] as $value) {
+                        if (function_exists(trim($value)) && ! in_array($value, $white_fun)) {
                             $danger = true;
                             break;
                         }
@@ -3253,7 +3260,7 @@ class ParserController extends Controller
                 }
                 
                 // 过滤特殊字符串
-                if (preg_match('/(\([\w\s\.]+\))|(\$_GET\[)|(\$_POST\[)|(\$_REQUEST\[)|(\$_COOKIE\[)|(\$_SESSION\[)|(file_put_contents)|(file_get_contents)|(fwrite)|(phpinfo)|(base64)|(`)|(shell_exec)|(eval)|(assert)|(system)|(exec)|(passthru)|(pcntl_exec)|(popen)|(proc_open)|(print_r)|(print)|(urldecode)|(chr)|(include)|(request)|(__FILE__)|(__DIR__)|(copy)|(call_user_)|(preg_replace)|(array_map)|(array_reverse)|(array_filter)|(getallheaders)|(get_headers)|(decode_string)|(htmlspecialchars)|(session_id)/i', $matches[1][$i])) {
+                if (preg_match('/(\([\w\s\.]+\))|(\$_GET\[)|(\$_POST\[)|(\$_REQUEST\[)|(\$_COOKIE\[)|(\$_SESSION\[)|(file_put_contents)|(file_get_contents)|(fwrite)|(phpinfo)|(base64)|(`)|(shell_exec)|(eval)|(assert)|(system)|(exec)|(passthru)|(pcntl_exec)|(popen)|(proc_open)|(print_r)|(print)|(urldecode)|(chr)|(include)|(request)|(__FILE__)|(__DIR__)|(copy)|(call_user_)|(preg_replace)|(array_map)|(array_reverse)|(array_filter)|(getallheaders)|(get_headers)|(decode_string)|(htmlspecialchars)|(session_id)|(strrev)|(substr)/i', $matches[1][$i])) {
                     $danger = true;
                 }
                 
