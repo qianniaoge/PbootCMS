@@ -56,12 +56,13 @@ class IndexController extends Controller
         
         // 地址去后缀，并且强制模式
         $url_rule_suffix = substr($this->config('url_rule_suffix'), 1);
-        $url_ok = false;
+        $suffix = false;
+        $slash = false;
         if (preg_match('/(.*)(_|\.)' . $url_rule_suffix . '$/', $path, $matchs)) {
             $path = $matchs[1];
-            $url_ok = true;
+            $suffix = true;
         } elseif (preg_match('/^[\w\-\/]+\/$/', $path)) {
-            $url_ok = true;
+            $slash = true;
             $path = trim($path, '/');
         }
         $path_arr = $path ? explode('/', $path) : array();
@@ -150,7 +151,7 @@ class IndexController extends Controller
                         
                         if ($iscontent) {
                             define('CMS_PAGE', false); // 使用普通分页处理模型
-                            if (! ! $data && $url_ok) {
+                            if (! ! $data && $suffix) {
                                 if ($data->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $data->acode); // 调用内容语言与当前语言不一致时，自动切换语言
                                 }
@@ -161,7 +162,7 @@ class IndexController extends Controller
                         } else {
                             define('CMS_PAGE', true); // 使用cms分页处理模型
                             
-                            if (! ! $sort && $url_ok) {
+                            if (! ! $sort && ! $suffix) {
                                 if ($sort->acode != get_lg() && Config::get('lgautosw') !== '0') {
                                     cookie('lg', $sort->acode); // 调用栏目语言与当前语言不一致时，自动切换语言
                                 }

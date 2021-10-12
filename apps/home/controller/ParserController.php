@@ -2683,6 +2683,7 @@ class ParserController extends Controller
         $pattern2 = '/\[sql:([\w]+)(\s+[^]]+)?\]/';
         
         if (preg_match_all($pattern, $content, $matches)) {
+            
             $count = count($matches[0]);
             for ($i = 0; $i < $count; $i ++) {
                 // 获取调节参数
@@ -3477,14 +3478,11 @@ class ParserController extends Controller
         if ($striptags) {
             $string = strip_tags($string);
         }
+        
         $param = array();
-        if (preg_match_all('/([\w]+)[\s]?=[\s]?([\'\"]([^\'\"]+)?[\'\"]|([^\s]+))/i', $string, $matches)) {
+        if (preg_match_all('/([\w]+)[\s]?=[\s]?([\"]([^\"]+)?[\"]|[\']([^\']+)?[\']|([^\s]+))/i', $string, $matches)) {
             foreach ($matches[1] as $key => $value) {
-                if ($matches[3][$key]) {
-                    $param[$value] = $matches[3][$key];
-                } else {
-                    $param[$value] = $matches[4][$key];
-                }
+                $param[$value] = $matches[3][$key] ?: $matches[4][$key] ?: $matches[5][$key];
             }
         }
         return $param;
