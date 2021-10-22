@@ -1298,11 +1298,11 @@ CREATE TABLE `ay_model` (
 --
 
 INSERT INTO `ay_model` (`id`,`mcode`,`name`,`type`,`urlname`,`listtpl`,`contenttpl`,`status`,`issystem`,`create_user`,`update_user`,`create_time`,`update_time`) VALUES
-('1','1','专题','1','pages','','about.html','1','1','admin','admin','2018-04-11 17:16:01','2019-08-05 11:11:44'),
-('2','2','新闻','2','news','newslist.html','news.html','1','1','admin','admin','2018-04-11 17:17:16','2019-08-05 11:12:04'),
-('3','3','产品','2','products','productlist.html','product.html','1','0','admin','admin','2018-04-11 17:17:46','2019-08-05 11:12:17'),
-('4','4','案例','2','cases','caselist.html','case.html','1','0','admin','admin','2018-04-11 17:19:53','2019-08-05 11:12:26'),
-('5','5','招聘','2','jobs','joblist.html','job.html','1','0','admin','admin','2018-04-11 17:24:34','2019-08-05 11:12:37');
+('1','1','专题','1','about','','about.html','1','1','admin','admin','2018-04-11 17:16:01','2019-08-05 11:11:44'),
+('2','2','新闻','2','list','newslist.html','news.html','1','1','admin','admin','2018-04-11 17:17:16','2019-08-05 11:12:04'),
+('3','3','产品','2','list','productlist.html','product.html','1','0','admin','admin','2018-04-11 17:17:46','2019-08-05 11:12:17'),
+('4','4','案例','2','list','caselist.html','case.html','1','0','admin','admin','2018-04-11 17:19:53','2019-08-05 11:12:26'),
+('5','5','招聘','2','list','joblist.html','job.html','1','0','admin','admin','2018-04-11 17:24:34','2019-08-05 11:12:37');
 
 -- --------------------------------------------------------
 
