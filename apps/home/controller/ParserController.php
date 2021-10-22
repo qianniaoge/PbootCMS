@@ -3270,7 +3270,7 @@ class ParserController extends Controller
                 }
                 
                 eval('if(' . $matches[1][$i] . '){$flag="if";}else{$flag="else";}');
-                if (preg_match('/([\s\S]*)?\{else\}([\s\S]*)?/', $matches[2][$i], $matches2)) { // 判断是否存在else
+                if (preg_match('/^([\s\S]*)\{else\}([\s\S]*)$/', $matches[2][$i], $matches2)) { // 判断是否存在else
                     switch ($flag) {
                         case 'if': // 条件为真
                             if (isset($matches2[1])) {

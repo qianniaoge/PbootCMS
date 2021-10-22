@@ -1,10 +1,10 @@
 <?php
 return array(
     // 应用版本
-    'app_version' => '3.0.9',
+    'app_version' => '3.1.0',
     
     // 发布时间
-    'release_time' => '20211013',
+    'release_time' => '20211023',
     
     // 修订版本
     'revise_version' => '1'

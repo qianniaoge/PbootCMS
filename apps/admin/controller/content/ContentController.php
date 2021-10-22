@@ -120,7 +120,7 @@ class ContentController extends Controller
                 alert_back('文章标题不能为空！');
             }
             
-            if ($filename && ! preg_match('/^[a-zA-Z0-9\-]+$/', $filename)) {
+            if ($filename && ! preg_match('/^[a-zA-Z0-9\-\/]+$/', $filename)) {
                 alert_back('内容URL名称只允许字母、数字、横线组成!');
             }
             
@@ -437,7 +437,7 @@ class ContentController extends Controller
                 alert_back('文章标题不能为空！');
             }
             
-            if ($filename && ! preg_match('/^[a-zA-Z0-9\-]+$/', $filename)) {
+            if ($filename && ! preg_match('/^[a-zA-Z0-9\-\/]+$/', $filename)) {
                 alert_back('内容URL名称只允许字母、数字、横线组成!');
             }
             

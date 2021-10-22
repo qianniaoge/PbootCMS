@@ -129,9 +129,9 @@
 			                </div>
 			                
 			                <div class="layui-form-item">
-			                     <label class="layui-form-label">URL名称 </label>
+			                     <label class="layui-form-label">URL名称  <span class="layui-text-red">*</span></label>
 			                     <div class="layui-input-block">
-			                     	<input type="text" name="filename" placeholder="请输入URL名称，如:test" class="layui-input">
+			                     	<input type="text" name="filename" required lay-verify="required" placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
 			                     </div>
 			                </div>
 			                
@@ -416,9 +416,9 @@
 		                </div>
 		                
 		                <div class="layui-form-item">
-		                     <label class="layui-form-label">URL名称 </label>
+		                     <label class="layui-form-label">URL名称 <span class="layui-text-red">*</span> </label>
 		                     <div class="layui-input-block">
-		                     	<input type="text" name="filename" value="{$sort->filename}" placeholder="请输入URL名称，如:test" class="layui-input">
+		                     	<input type="text" name="filename" value="{$sort->filename}" required lay-verify="required" placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
 		                     </div>
 		                </div>
 		                
