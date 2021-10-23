@@ -42,9 +42,16 @@
 		                               <i class="fa fa-folder-open-o" aria-hidden="true"></i>
 		                            {/if}
 		                            [value->name]
+		                           
 		                            
 		                            {if($value->outlink)}
-		                            	<span class="layui-badge layui-bg-black">链</span>
+		                            	<a href="[$value->outlink]"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+		                            {else}
+		                            	{if($value->type==1)}
+		                            	 <a href="{url./admin/Single/index/mcode}/[value->mcode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
+		                            	{else}
+		                            	 <a href="{url./admin/Content/index/mcode}/[value->mcode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
+		                            	 {/if}
 		                            {/if}
 		                        </td>
 		                        <td>[value->scode]</td>
@@ -61,9 +68,9 @@
 		                        <td class="table-input"><input type="text" name="sorting[]" value="[value->sorting]" class="layui-input"></td>
 		                       	<td>
 		                            {if($value->status)}
-		                            <a href="{url./admin/'.C.'/mod/scode/'.$value->scode.'/field/status/value/0}"><i class='fa fa-toggle-on' title="点击禁用"></i></a>
+		                            <a href="{url./admin/'.C.'/mod/scode/'.$value->scode.'/field/status/value/0}" class="switch"><i class='fa fa-toggle-on' title="点击禁用"></i></a>
 		                            {else}
-		                            <a href="{url./admin/'.C.'/mod/scode/'.$value->scode.'/field/status/value/1}"><i class='fa fa-toggle-off' title="点击启用"></i></a>
+		                            <a href="{url./admin/'.C.'/mod/scode/'.$value->scode.'/field/status/value/1}" class="switch"><i class='fa fa-toggle-off' title="点击启用"></i></a>
 		                            {/if}
 		                        </td>
 		                        <td>

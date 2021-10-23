@@ -112,6 +112,7 @@ layui.use(['element','upload','laydate','form'], function(){
    //执行多图片上传实例
   var files='';
   var html='';
+  var html2='';
   var uploadsInst = upload.render({
 	elem: '.uploads' //绑定元素
 	,url: uploadurl //上传接口
@@ -136,6 +137,7 @@ layui.use(['element','upload','laydate','form'], function(){
 		   html += "<dl><dt><img src='"+sitedir+res.data[0]+"' data-url='"+res.data[0]+"'></dt><dd>删除</dd>" +
 		   		"<dt><input type='text' name='picstitle[]' style='width:95%' /></dt>"+		
 		   		"</dl>";
+		   html2 += "<dl><dt><img src='"+sitedir+res.data[0]+"' data-url='"+res.data[0]+"'></dt><dd>删除</dd>" +	"</dl>";
 	   }else{
 		   layer.msg('有文件上传失败：'+res.data); 
 	   } 
@@ -151,10 +153,15 @@ layui.use(['element','upload','laydate','form'], function(){
 	       }else{
 	    	   $('#'+des).val(files); 
 	       }
-	 	   $('#'+des+'_box').append(html); 
+	       if(des=='pics'){
+	    	   $('#'+des+'_box').append(html); 
+	       }else{
+	    	   $('#'+des+'_box').append(html2); 
+	       }
 	 	   layer.msg('成功上传'+obj.successful+'个文件！'); 
 	 	   files='';
 	 	   html='';
+	 	   html2='';
 	    }else{
 	 	   layer.msg('全部上传失败！'); 
 	    }

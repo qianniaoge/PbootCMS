@@ -66,29 +66,9 @@ class ContentSortController extends Controller
         foreach ($tree as $value) {
             $this->count ++;
             $this->outData[$this->count] = new \stdClass();
-            $this->outData[$this->count]->id = $value->id;
-            $this->outData[$this->count]->blank = $this->blank;
-            $this->outData[$this->count]->name = $value->name;
-            $this->outData[$this->count]->subname = $value->subname;
-            $this->outData[$this->count]->scode = $value->scode;
-            $this->outData[$this->count]->pcode = $value->pcode;
-            $this->outData[$this->count]->mcode = $value->mcode;
-            $this->outData[$this->count]->listtpl = $value->listtpl;
-            $this->outData[$this->count]->contenttpl = $value->contenttpl;
-            $this->outData[$this->count]->ico = $value->ico;
-            $this->outData[$this->count]->pic = $value->pic;
-            $this->outData[$this->count]->keywords = $value->keywords;
-            $this->outData[$this->count]->description = $value->description;
-            $this->outData[$this->count]->outlink = $value->outlink;
-            $this->outData[$this->count]->sorting = $value->sorting;
-            $this->outData[$this->count]->status = $value->status;
-            $this->outData[$this->count]->filename = $value->filename;
-            $this->outData[$this->count]->type = $value->type;
-            $this->outData[$this->count]->urlname = $value->urlname;
-            $this->outData[$this->count]->create_user = $value->create_user;
-            $this->outData[$this->count]->update_user = $value->update_user;
-            $this->outData[$this->count]->create_time = $value->create_time;
-            $this->outData[$this->count]->update_time = $value->update_time;
+            foreach ($value as $k => $v) {
+                $this->outData[$this->count]->$k = $v;
+            }
             
             if ($value->son) {
                 $this->outData[$this->count]->son = true;

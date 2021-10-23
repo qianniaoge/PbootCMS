@@ -188,6 +188,11 @@ class SingleController extends Controller
                 $description = escape_string(clear_html_blank(substr_both(strip_tags($_POST['content']), 0, 150)));
             }
             
+            // 无缩略图时，自动提取文章第一张图为缩略图
+            if (! $ico && preg_match('/<img\s+.*?src=\s?[\'|\"](.*?(\.gif|\.jpg|\.png|\.jpeg))[\'|\"].*?[\/]?>/i', decode_string($content), $srcs) && isset($srcs[1])) {
+                $ico = $srcs[1];
+            }
+            
             // 缩放缩略图
             if ($ico) {
                 resize_img(ROOT_PATH . $ico, '', $this->config('ico.max_width'), $this->config('ico.max_height'));

@@ -22,7 +22,8 @@ class ContentSortModel extends Model
         $field = array(
             'a.*',
             'b.type',
-            'b.urlname'
+            'b.urlname',
+            '(select count(*) from ay_content c where c.scode=a.scode) wzcount'
         );
         $join = array(
             'ay_model b',

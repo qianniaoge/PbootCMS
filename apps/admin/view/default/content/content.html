@@ -76,23 +76,23 @@
 		                        <td class="table-input"><input type="text" lay-ignore class="layui-input" name="sorting[]" value="[value->sorting]"></td>
 		                        <td>
 		                        {if($value->status)}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/status/value/0}"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/status/value/0}" class="switch"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
 			                        {else}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/status/value/1}"><i class='fa fa-toggle-off' title="点击开启"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/status/value/1}" class="switch"><i class='fa fa-toggle-off' title="点击开启"></i></a>
 			                    {/if}
 			                    </td>
 			                    <td>
 		                        {if($value->istop)}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/istop/value/0}"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/istop/value/0}" class="switch"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
 			                        {else}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/istop/value/1}"><i class='fa fa-toggle-off' title="点击开启"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/istop/value/1}" class="switch"><i class='fa fa-toggle-off' title="点击开启"></i></a>
 			                    {/if}
 			                    </td>
 			                    <td>
 		                        {if($value->isrecommend)}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/isrecommend/value/0}"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/isrecommend/value/0}" class="switch"><i class='fa fa-toggle-on' title="点击关闭"></i></a>
 			                        {else}
-			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/isrecommend/value/1}"><i class='fa fa-toggle-off' title="点击开启"></i></a>
+			                        <a href="{url./admin/'.C.'/mod/id/'.$value->id.'/field/isrecommend/value/1}" class="switch"><i class='fa fa-toggle-off' title="点击开启"></i></a>
 			                    {/if}
 			                    </td>
 			                    <td>[value->visits]</td>
@@ -275,6 +275,19 @@
 									 <div id="[value->name]_box" class="pic"></div>
 				                </div>
 			                	{/if}
+			                	
+			                	{if($value->type==10)}<!-- 多图片 -->
+			                	 <div class="layui-form-item">
+				                     <label class="layui-form-label">[value->description]</label>
+				                     <div class="layui-input-inline">
+				                     	<input type="text" name="[value->name]" id="[value->name]" placeholder="请上传[value->description]"  class="layui-input">
+				                     </div>
+				                     <button type="button" class="layui-btn uploads watermark" data-des="[value->name]">
+									 	 <i class="layui-icon">&#xe67c;</i>上传多图
+									 </button>
+									 <div id="[value->name]_box" class="pic addedit"><dl></dl> <!-- 规避空内容拖动bug --></div>
+				                </div>
+				                {/if}
 			                	
 			                	{if($value->type==6)}<!-- 文件 -->
 			                	<div class="layui-form-item">
@@ -627,6 +640,34 @@
 									 {php}$name=$value->name; {/php}
 									 <div id="[value->name]_box" class="pic"><dl><dt>{if([$content]->$name)}<img src='{SITE_DIR}{$content->{$value->name}}' data-url="{$content->{$value->name}}"></dt><dd>删除</dd></dl>{/if}</div>
 				                </div>
+			                	{/if}
+			                	
+			                	{if($value->type==10)}<!-- 多图 -->
+			                	 <div class="layui-form-item">
+				                     <label class="layui-form-label">[value->description]</label>
+				                     <div class="layui-input-inline">
+				                     	<input type="text" name="[value->name]" id="[value->name]" value="{$content->{$value->name}}" placeholder="请上传[value->description]"  class="layui-input">
+				                     </div>
+				                     <button type="button" class="layui-btn uploads watermark" data-des="[value->name]">
+									 	 <i class="layui-icon">&#xe67c;</i>上传多图
+									 </button>
+									 <div id="[value->name]_box" class="pic addedit">
+									 	 <dl></dl> <!-- 规避空内容拖动bug -->
+										 {php}
+										 	$name=$value->name;
+										    if([$content->$name]){
+			                					$pics=explode(',',[$content->$name]);
+			                				}else{
+			                					$pics = array();
+			                				}
+			                				foreach ($pics as $key=>$value) {
+			                					//需要留一个空，不然被解析为标签了
+			                					echo "<dl><dt><img src='".SITE_DIR.$value."' data-url='".$value."'></dt><dd>删除</dd></dl>";
+		          							}
+		         						 {/php}
+	         						 </div>
+				                </div>
+			                	
 			                	{/if}
 			                	
 			                	{if($value->type==6)}<!-- 文件 -->

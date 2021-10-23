@@ -71,6 +71,22 @@ $(document).ready(function (e) {
     	    $(this).attr('href', $(this).attr('href')+hash);
         });
     }
+    
+    
+    //无刷新切换状态
+    $('.switch').on("click",".fa-toggle-on",function(){
+      $.get($(this).parent(".switch").attr("href"))
+      $(this).addClass("fa-toggle-off");
+      $(this).removeClass("fa-toggle-on");
+      return false;
+    })
+    $('.switch').on("click",".fa-toggle-off",function(){
+      $.get($(this).parent(".switch").attr("href"))
+      $(this).addClass("fa-toggle-on");
+      $(this).removeClass("fa-toggle-off");
+      return false;
+    })
+
 
 })
 

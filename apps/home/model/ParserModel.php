@@ -592,11 +592,17 @@ class ParserModel extends Model
     }
 
     // 指定内容多图
-    public function getContentPics($id)
+    public function getContentPics($id, $field)
     {
-        $result = parent::table('ay_content')->field("pics,picstitle")
-            ->where("id='$id'")
-            ->where('status=1')
+        $join = array(
+            'ay_content_ext b',
+            'a.id=b.contentid',
+            'LEFT'
+        );
+        $result = parent::table('ay_content a')->field($field . ',picstitle')
+            ->join($join)
+            ->where("a.id='$id'")
+            ->where('a.status=1')
             ->find();
         return $result;
     }

@@ -101,6 +101,10 @@ class ExtFieldController extends Controller
                     $mysql = 'TEXT';
                     $sqlite = 'TEXT(10000)';
                     break;
+                case '10': // 多图
+                    $mysql = 'varchar(1000)';
+                    $sqlite = 'TEXT(1000)';
+                    break;
                 default:
                     $mysql = 'varchar(200)';
                     $sqlite = 'TEXT(200)';

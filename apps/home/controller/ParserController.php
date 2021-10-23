@@ -1505,6 +1505,7 @@ class ParserController extends Controller
                 // 获取调节参数
                 $params = $this->parserParam($matches[1][$i]);
                 $id = - 1;
+                $field = "pics";
                 
                 if (! self::checkLabelLevel($params)) {
                     $content = str_replace($matches[0][$i], '', $content);
@@ -1525,12 +1526,15 @@ class ParserController extends Controller
                         case 'num':
                             $num = $value;
                             break;
+                        case 'field':
+                            $field = $value;
+                            break;
                     }
                 }
                 
                 // 读取内容多图
-                if (! ! $rs = $this->model->getContentPics(escape_string($id))) {
-                    $pics = explode(',', $rs->pics);
+                if (! ! $rs = $this->model->getContentPics(escape_string($id), $field)) {
+                    $pics = explode(',', $rs->$field);
                     $picstitle = explode(',', $rs->picstitle);
                 } else {
                     $pics = array();
@@ -1552,7 +1556,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 $key = 1;
-                foreach ($pics as $key => $value) { // 按查询图片条数循环
+                foreach ($pics as $vkey => $value) { // 按查询图片条数循环
                     $one_html = $matches[2][$i];
                     if (! $value)
                         continue;
@@ -1577,8 +1581,10 @@ class ParserController extends Controller
                                 }
                                 break;
                             case 'title':
-                                $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, isset($picstitle[$key]) ? $picstitle[$key] : ''), $one_html);
+                                $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, isset($picstitle[$vkey]) ? $picstitle[$vkey] : ''), $one_html);
                                 break;
+                            default:
+                                $one_html = str_replace($matches2[0][$j], '', $one_html);
                         }
                     }
                     $key ++;
