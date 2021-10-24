@@ -103,54 +103,56 @@ class IndexController extends Controller
                 default:
                     
                     $url_break_char = $this->config('url_break_char') ?: '_';
+                    $url_rule_content_path = $this->config('url_rule_content_path') ? true : false;
                     $err = '';
                     $iscontent = false;
                     
                     // 开始进行地址匹配
                     if (! $suffix && ! ! $sort = $this->model->getSort($path)) {
                         // 栏目名称，即栏目全路径匹配
-                    } elseif ($suffix && ! ! $data = $this->model->getContent($path)) {
-                        // 内容名称，即内容全路径匹配
-                        $iscontent = true;
                     } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $path, $matchs) && ! ! $sort = $this->model->getSort($matchs[1])) {
                         // 栏目名称_分页，栏目分页的情况
                         define('CMS_PAGE_CUSTOM', true); // 设置走自定义CMS分页
                         $_GET['page'] = $matchs[2]; // 设置分页参数
                     } else {
                         
-                        // 详情页至少是2级，对地址进行栏目和内容路径拆分，访问详情页
-                        $part1 = dirname($path);
-                        $part2 = basename($path);
-                        while ($part1 != '.') {
-                            if ((! ! $sort = $this->model->getSort($part1)) && ! ! $data = $this->model->getContent($part2)) {
-                                // 栏目名称/内容名称或ID
-                                $iscontent = true;
-                                $scode = $sort->scode;
-                                break;
-                            } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $part1, $matchs) && ! ! $model = $this->model->checkModelUrlname($matchs[1])) {
-                                // 模型名称_栏目ID/内容名称或ID
-                                $data = $this->model->getContent($part2);
-                                $iscontent = true;
-                                $scode = $matchs[2];
-                                // 限制串模型多路径
-                                if (! ! $data->urlname && $matchs[1] != $data->urlname) {
-                                    $err = true;
+                        if ($url_rule_content_path && ! ! $data = $this->model->getContent($path)) {
+                            $iscontent = true; // 短路径情况
+                        } elseif (! $url_rule_content_path) {
+                            // 详情页至少是2级，对地址进行栏目和内容路径拆分，访问详情页
+                            $part1 = dirname($path);
+                            $part2 = basename($path);
+                            while ($part1 != '.') {
+                                if ((! ! $sort = $this->model->getSort($part1)) && ! ! $data = $this->model->getContent($part2)) {
+                                    // 栏目名称/内容名称或ID
+                                    $iscontent = true;
+                                    $scode = $sort->scode;
+                                    break;
+                                } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $part1, $matchs) && ! ! $model = $this->model->checkModelUrlname($matchs[1])) {
+                                    // 模型名称_栏目ID/内容名称或ID
+                                    $data = $this->model->getContent($part2);
+                                    $iscontent = true;
+                                    $scode = $matchs[2];
+                                    // 限制串模型多路径
+                                    if (! ! $data->urlname && $matchs[1] != $data->urlname) {
+                                        $err = true;
+                                    }
+                                    break;
+                                } else {
+                                    $part2 = basename($part1) . '/' . $part2;
+                                    $part1 = dirname($part1);
                                 }
-                                break;
-                            } else {
-                                $part2 = basename($part1) . '/' . $part2;
-                                $part1 = dirname($part1);
                             }
-                        }
-                        
-                        // 限制串栏目多路径
-                        if ($scode != $data->scode) {
-                            $err = true;
-                        }
-                        
-                        // 限制串内容ID及名称多路径
-                        if (! ! $data->filename && $part2 != $data->filename) {
-                            $err = true;
+                            
+                            // 限制串栏目多路径
+                            if ($scode != $data->scode) {
+                                $err = true;
+                            }
+                            
+                            // 限制串内容ID及名称多路径
+                            if (! ! $data->filename && $part2 != $data->filename) {
+                                $err = true;
+                            }
                         }
                         
                         // 执行未配置栏目名称但是配置了模型路径的情况路径匹配
@@ -194,7 +196,7 @@ class IndexController extends Controller
                                 $this->getListPage($sort);
                             }
                         } else {
-                            _404('您访问的栏目不存在，请核对后重试！');
+                            _404('您访问的页面不存在，请核对后重试！');
                         }
                     }
             }

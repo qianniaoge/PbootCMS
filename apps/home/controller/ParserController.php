@@ -3910,7 +3910,7 @@ class ParserController extends Controller
             } elseif ($pagetype == 'content') {
                 if ($url_rule_content_path) {
                     if ($contentfilename) {
-                        $link = Url::home($sortfilename . '/' . $contentfilename, true);
+                        $link = Url::home($contentfilename, true);
                     } else {
                         $link = Url::home($id, true);
                     }
