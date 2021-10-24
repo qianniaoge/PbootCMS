@@ -75,17 +75,11 @@
 		                        </td>
 		                        <td>
 		                        	{if(!$value->outlink)}
-			                        	{if($value->type==1)}
-				                           {php}$value->urlname=$value->urlname?:'about';{/php}
-				                        {else}
-				                       	   {php}$value->urlname=$value->urlname?:'list';{/php}
-				                        {/if}
-				                       
-			                           	{if($value->filename)}
-			                        		<a href="{fun=homeurl('/home/Index/'.$value->filename)}" class="layui-btn layui-btn-xs layui-btn-primary"  target="_blank">查看</a>
-			                        	{else}
-			                        		<a href="{fun=homeurl('/home/Index/'.$value->urlname.[$url_break_char].$value->scode)}" class="layui-btn layui-btn-xs layui-btn-primary"  target="_blank">查看</a>
-			                        	{/if}
+		                        		{php}
+			                        		$Parser=new app\home\controller\ParserController();
+			                        		$link=$Parser->parserLink($value->type,$value->urlname,'list',$value->scode,$value->filename,'','');
+			                        	{/php}
+			                        	<a href="{php}echo $link{/php}" class="layui-btn layui-btn-xs layui-btn-primary"  target="_blank">查看</a>
 		                        	{/if}
 		                
 		                            {fun=get_btn_del($value->scode,'scode')}

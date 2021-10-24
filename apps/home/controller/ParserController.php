@@ -184,8 +184,18 @@ class ParserController extends Controller
     public function parserSiteLabel($content)
     {
         $pattern = '/\{pboot:site([\w]+)(\s+[^}]+)?\}/';
-        if (preg_match_all($pattern, $content, $matches)) {
+        $data = array();
+        
+        // 页面自适应标题避免多横线
+        if (preg_match($pattern, $content)) {
             $data = $this->model->getSite();
+            if (! $data->subtitle) {
+                $content = str_replace('{pboot:sitetitle}-{pboot:sitesubtitle}', '{pboot:sitetitle}', $content);
+            }
+        }
+        
+        if (preg_match_all($pattern, $content, $matches)) {
+            $data = $data ?: $this->model->getSite();
             $count = count($matches[0]);
             for ($i = 0; $i < $count; $i ++) {
                 $params = $this->parserParam($matches[2][$i]);
@@ -3876,10 +3886,11 @@ class ParserController extends Controller
     }
 
     // 解析生成内容链接
-    protected function parserLink($type, $urlname, $page, $scode, $sortfilename, $id, $contentfilename)
+    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id, $contentfilename)
     {
         $url_break_char = $this->config('url_break_char') ?: '_';
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
+        $url_rule_content_path = $this->config('url_rule_content_path') ? true : false;
         
         if ($type == 1) {
             $urlname = $urlname ?: 'about';
@@ -3890,21 +3901,29 @@ class ParserController extends Controller
             }
         } else {
             $urlname = $urlname ?: 'list';
-            if ($page == 'list') {
+            if ($pagetype == 'list') {
                 if ($sortfilename) {
                     $link = Url::home($sortfilename);
                 } else {
                     $link = Url::home($urlname . $url_break_char . $scode);
                 }
-            } elseif ($page == 'content') {
-                if ($sortfilename && $contentfilename) {
-                    $link = Url::home($sortfilename . '/' . $contentfilename, true);
-                } elseif ($sortfilename) {
-                    $link = Url::home($sortfilename . '/' . $id, true);
-                } elseif ($contentfilename) {
-                    $link = Url::home($urlname . $url_break_char . $scode . '/' . $contentfilename, true);
+            } elseif ($pagetype == 'content') {
+                if ($url_rule_content_path) {
+                    if ($contentfilename) {
+                        $link = Url::home($sortfilename . '/' . $contentfilename, true);
+                    } else {
+                        $link = Url::home($id, true);
+                    }
                 } else {
-                    $link = Url::home($urlname . $url_break_char . $scode . '/' . $id, true);
+                    if ($sortfilename && $contentfilename) {
+                        $link = Url::home($sortfilename . '/' . $contentfilename, true);
+                    } elseif ($sortfilename) {
+                        $link = Url::home($sortfilename . '/' . $id, true);
+                    } elseif ($contentfilename) {
+                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $contentfilename, true);
+                    } else {
+                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $id, true);
+                    }
                 }
             } else {
                 $link = 'javascript:;';

@@ -99,22 +99,8 @@
 		                        <td>
 		                         	{if(!$value->outlink)}
 			                        	{php}
-				                        	$sortfilename = $value->sortfilename;
-				                        	$contentfilename = $value->filename;
-				                        	$id = $value->id;
-				                        	$urlname = $value->urlname?:'list';
-				                        	$scode = $value->scode;
-				                        	$url_break_char= get_var('url_break_char');
-				                        	
-				                        	if ($sortfilename && $contentfilename) {
-							                    $link = homeurl('home/Index/' . $sortfilename . '/' . $contentfilename, true);
-							                } elseif ($sortfilename) {
-							                    $link = homeurl('home/Index/' . $sortfilename . '/' . $id, true);
-							                } elseif ($contentfilename) {
-							                    $link = homeurl('home/Index/' . $urlname . $url_break_char . $scode . '/' . $contentfilename, true);
-							                } else {
-							                    $link = homeurl('home/Index/' . $urlname . $url_break_char . $scode . '/' . $id, true);
-							                }
+			                        		$Parser=new app\home\controller\ParserController();
+			                        		$link=$Parser->parserLink(2,$value->urlname,'content',$value->scode,$value->sortfilename,$value->id,$value->filename);
 			                        	{/php}
 	
 			                        	<input type="hidden" name="urls[[value->id]]" value="{php}echo $link{/php}">

@@ -549,6 +549,19 @@
 		                     </div>
 		                </div>
 		                
+		                
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">文章路径</label>
+		                     <div class="layui-input-block">
+		                     	<P>
+		                     		<input type="radio" name="url_rule_content_path" value="0" {if(![$configs.url_rule_content_path.value])} checked="checked" {/if} title="带栏目路径，类似：/product/1.html">
+								</P>
+		                     	<P>
+									<input type="radio" name="url_rule_content_path" value="1" {if([$configs.url_rule_content_path.value]==1)} checked="checked" {/if} title="不带栏目路径，类似：/1.html">
+								</P>
+		                     </div>
+		                </div>
+		                
 		                <div class="layui-form-item">
 							 <div class="layui-input-block">
 							    <button class="layui-btn" lay-submit name="submit" value="urlrule">立即提交</button>

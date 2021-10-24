@@ -107,8 +107,11 @@ class IndexController extends Controller
                     $iscontent = false;
                     
                     // 开始进行地址匹配
-                    if (! ! $sort = $this->model->getSort($path)) {
+                    if (! $suffix && ! ! $sort = $this->model->getSort($path)) {
                         // 栏目名称，即栏目全路径匹配
+                    } elseif ($suffix && ! ! $data = $this->model->getContent($path)) {
+                        // 内容名称，即内容全路径匹配
+                        $iscontent = true;
                     } elseif (preg_match('/^([a-zA-Z0-9\-\/]+)' . $url_break_char . '([0-9]+)$/i', $path, $matchs) && ! ! $sort = $this->model->getSort($matchs[1])) {
                         // 栏目名称_分页，栏目分页的情况
                         define('CMS_PAGE_CUSTOM', true); // 设置走自定义CMS分页
