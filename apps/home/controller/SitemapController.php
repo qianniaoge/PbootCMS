@@ -26,10 +26,8 @@ class SitemapController extends Controller
     {
         header("Content-type:text/xml;charset=utf-8");
         $str = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $str .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.baidu.com/schemas/sitemap-mobile/1/">' . "\n";
+        $str .= '<urlset>' . "\n";
         $str .= $this->makeNode('', date('Y-m-d'), '1.00'); // 根目录
-        
-        $url_break_char = $this->config('url_break_char') ?: '_';
         
         $sorts = $this->model->getSorts();
         $Parser = new ParserController();
@@ -61,12 +59,39 @@ class SitemapController extends Controller
     {
         $node = '
 <url>
-    <mobile:mobile type="pc,mobile"/>
     <loc>' . get_http_url() . $link . '</loc>
     <priority>' . $priority . '</priority>
     <lastmod>' . $date . '</lastmod>
     <changefreq>Always</changefreq>
 </url>';
         return $node;
+    }
+
+    // 文本格式
+    public function linkTxt()
+    {
+        $sorts = $this->model->getSorts();
+        $Parser = new ParserController();
+        $str = '';
+        foreach ($sorts as $value) {
+            if ($value->outlink) {
+                continue;
+            } elseif ($value->type == 1) {
+                $link = $Parser->parserLink(1, $value->urlname, 'about', $value->scode, $value->filename);
+            } else {
+                $link = $Parser->parserLink(2, $value->urlname, 'list', $value->scode, $value->filename);
+                $str .= get_http_url() . $link . "\n";
+                $contents = $this->model->getSortContent($value->scode);
+                foreach ($contents as $value2) {
+                    if ($value2->outlink) { // 外链
+                        continue;
+                    } else {
+                        $link = $Parser->parserLink(2, $value2->urlname, 'content', $value2->scode, $value2->sortfilename, $value2->id, $value2->filename);
+                    }
+                    $str .= get_http_url() . $link . "\n";
+                }
+            }
+        }
+        echo $str;
     }
 }

@@ -3886,7 +3886,7 @@ class ParserController extends Controller
     }
 
     // 解析生成内容链接
-    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id, $contentfilename)
+    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id = '', $contentfilename = '')
     {
         $url_break_char = $this->config('url_break_char') ?: '_';
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;

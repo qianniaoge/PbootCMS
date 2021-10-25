@@ -37,8 +37,9 @@ return array(
         
         // 前台及接口路径统一小写URL
         // =======前台路由============
-        'home/sitemap.xml' => 'home/Sitemap/index', // 站点地图1
-        'home/sitemap' => 'home/Sitemap/index', // 站点地图2
+        'home/sitemap.xml' => 'home/Sitemap/index', // 站点地图XML格式
+        'home/sitemap.txt' => 'home/Sitemap/linkTxt', // 站点地图TXT格式
+        'home/sitemap' => 'home/Sitemap/index', // 站点地图默认XML
                                                 
         // =======接口路由============
         'api/list' => 'api/list/index/scode',

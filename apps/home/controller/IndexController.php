@@ -85,8 +85,13 @@ class IndexController extends Controller
                     $form->index();
                     break;
                 case 'sitemap':
+                case 'sitemap_xml':
                     $sitemap = new SitemapController();
                     $sitemap->index();
+                    break;
+                case 'sitemap_txt':
+                    $sitemap = new SitemapController();
+                    $sitemap->linkTxt();
                     break;
                 case 'tag':
                     $tag = new TagController();
