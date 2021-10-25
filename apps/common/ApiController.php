@@ -18,6 +18,10 @@ class ApiController extends Controller
     {
         // 自动缓存基础信息
         cache_config();
+        
+        // 从配置文件读取cmsname参数来设置系统名称
+        define("CMSNAME", $this->config("cmsname") ?: 'PbootCMS');
+        
         $this->checkAccess($this->config());
     }
 

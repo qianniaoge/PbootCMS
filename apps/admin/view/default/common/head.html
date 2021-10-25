@@ -63,7 +63,7 @@
        </li>
 
        <li class="layui-nav-item layui-hide-xs">
-       		<a href="{url./admin/Index/clearCache}"><i class="fa fa-trash-o" aria-hidden="true"></i> 清理缓存</a>
+       		<a href="{url./admin/Index/clearCache}" class="ajaxlink"><i class="fa fa-trash-o" aria-hidden="true"></i> 清理缓存</a>
        </li>
        
        <li class="layui-nav-item layui-hide-xs">
@@ -75,7 +75,7 @@
 	          <dd><a href="{url./admin/Index/loginOut}"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出登录</a></dd>
 	          {if(session('ucode')==10001)}
 	          	<dd><a href="{url./admin/Upgrade/index}"><i class="fa fa-cloud-upload" aria-hidden="true"></i> 在线更新</a></dd>
-	          	<dd><a href="{url./admin/Index/clearSession}"><i class="fa fa-trash-o" aria-hidden="true"></i> 清理会话</a></dd>
+	          	<dd><a href="{url./admin/Index/clearSession}" class="ajaxlink"><i class="fa fa-trash-o" aria-hidden="true"></i> 清理会话</a></dd>
 	          {/if}
 	        </dl>
       </li>

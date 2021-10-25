@@ -114,7 +114,7 @@ function path_list($path)
  *            是否删除目录，true删除目录，false则只删除文件保留目录
  * @return bool 返回删除状态
  */
-function path_delete($path, $delDir = false)
+function path_delete($path, $delDir = false, $exFile = array())
 {
     $result = true; // 对于空目录直接返回true状态
     if (! file_exists($path)) {
@@ -123,7 +123,7 @@ function path_delete($path, $delDir = false)
     if (is_dir($path)) {
         if (! ! $dirs = scandir($path)) {
             foreach ($dirs as $value) {
-                if ($value != "." && $value != "..") {
+                if ($value != "." && $value != ".." && ! in_array($value, $exFile)) {
                     $dir = $path . '/' . $value;
                     $result = is_dir($dir) ? path_delete($dir, $delDir) : unlink($dir);
                 }

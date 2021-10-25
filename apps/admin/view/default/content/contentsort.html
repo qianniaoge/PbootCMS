@@ -48,9 +48,9 @@
 		                            	<a href="[value->outlink]" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>
 		                            {else}
 		                            	{if($value->type==1)}
-		                            	 <a href="{url./admin/Single/index/mcode}/[value->mcode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
+		                            	 <a href="{url./admin/Single/index/mcode}/[value->mcode]&scode=[value->scode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
 		                            	{else}
-		                            	 <a href="{url./admin/Content/index/mcode}/[value->mcode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
+		                            	 <a href="{url./admin/Content/index/mcode}/[value->mcode]&scode=[value->scode]"><i class="fa fa-file-text-o" aria-hidden="true"></i> </a>
 		                            	 {/if}
 		                            {/if}
 		                        </td>
@@ -130,9 +130,9 @@
 			                </div>
 			                
 			                <div class="layui-form-item">
-			                     <label class="layui-form-label">URL名称  <span class="layui-text-red">*</span></label>
+			                     <label class="layui-form-label">URL名称 </label>
 			                     <div class="layui-input-block">
-			                     	<input type="text" name="filename" required lay-verify="required" placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
+			                     	<input type="text" name="filename"  placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
 			                     </div>
 			                </div>
 			                
@@ -417,9 +417,9 @@
 		                </div>
 		                
 		                <div class="layui-form-item">
-		                     <label class="layui-form-label">URL名称 <span class="layui-text-red">*</span> </label>
+		                     <label class="layui-form-label">URL名称 </label>
 		                     <div class="layui-input-block">
-		                     	<input type="text" name="filename" value="{$sort->filename}" required lay-verify="required" placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
+		                     	<input type="text" name="filename" value="{$sort->filename}"  placeholder="请输入URL名称，如:test，test/a/b/c" class="layui-input">
 		                     </div>
 		                </div>
 		                

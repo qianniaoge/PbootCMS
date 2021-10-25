@@ -32,40 +32,22 @@ class SitemapController extends Controller
         $url_break_char = $this->config('url_break_char') ?: '_';
         
         $sorts = $this->model->getSorts();
+        $Parser = new ParserController();
         foreach ($sorts as $value) {
             if ($value->outlink) {
                 continue;
             } elseif ($value->type == 1) {
-                $value->urlname = $value->urlname ?: 'list';
-                if ($value->filename) {
-                    $link = Url::home($value->filename);
-                } else {
-                    $link = Url::home($value->urlname . $url_break_char . $value->scode);
-                }
+                $link = $Parser->parserLink(1, $value->urlname, 'about', $value->scode, $value->filename);
                 $str .= $this->makeNode($link, date('Y-m-d'), '0.80');
             } else {
-                $value->urlname = $value->urlname ?: 'list';
-                if ($value->filename) {
-                    $link = Url::home($value->filename);
-                } else {
-                    $link = Url::home($value->urlname . $url_break_char . $value->scode);
-                }
+                $link = $Parser->parserLink(2, $value->urlname, 'list', $value->scode, $value->filename);
                 $str .= $this->makeNode($link, date('Y-m-d'), '0.80');
                 $contents = $this->model->getSortContent($value->scode);
                 foreach ($contents as $value2) {
                     if ($value2->outlink) { // 外链
                         continue;
                     } else {
-                        $value2->urlname = $value2->urlname ?: 'list';
-                        if ($value2->filename && $value2->sortfilename) {
-                            $link = Url::home($value2->sortfilename . '/' . $value2->filename, true);
-                        } elseif ($value2->sortfilename) {
-                            $link = Url::home($value2->sortfilename . '/' . $value2->id, true);
-                        } elseif ($value2->contentfilename) {
-                            $link = Url::home($value2->urlname . $url_break_char . $value2->scode . '/' . $value2->filename, true);
-                        } else {
-                            $link = Url::home($value2->urlname . $url_break_char . $value2->scode . '/' . $value2->id, true);
-                        }
+                        $link = $Parser->parserLink(2, $value2->urlname, 'content', $value2->scode, $value2->sortfilename, $value2->id, $value2->filename);
                     }
                     $str .= $this->makeNode($link, date('Y-m-d'), '0.60');
                 }

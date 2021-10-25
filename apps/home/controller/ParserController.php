@@ -3892,7 +3892,7 @@ class ParserController extends Controller
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
         $url_rule_content_path = $this->config('url_rule_content_path') ? true : false;
         
-        if ($type == 1) {
+        if ($type == 1 || $pagetype == 'about') {
             $urlname = $urlname ?: 'about';
             if ($sortfilename) {
                 $link = Url::home($sortfilename);

@@ -11,6 +11,7 @@ namespace app\api\controller;
 use core\basic\Controller;
 use app\api\model\CmsModel;
 use core\basic\Url;
+use app\home\controller\ParserController;
 
 class CmsController extends Controller
 {
@@ -329,7 +330,7 @@ class CmsController extends Controller
         
         // 读取数据
         $data = $this->model->getLists($acode, $scode, $num, $order, $where1, $where2, $where3, $fuzzy);
-        $url_break_char = $this->config('url_break_char') ?: '_';
+        $Parser = new ParserController();
         
         foreach ($data as $key => $value) {
             if ($value->outlink) {
@@ -342,16 +343,7 @@ class CmsController extends Controller
             $data[$key]->content = str_replace(STATIC_DIR . '/upload/', get_http_url() . STATIC_DIR . '/upload/', $value->content);
             
             // 返回网页链接地址，便于AJAX调用内容
-            $urlname = $value->urlname ?: 'list';
-            if ($value->sortfilename && $value->filename) {
-                $data[$key]->contentlink = Url::home($value->sortfilename . '/' . $value->filename, true);
-            } elseif ($value->sortfilename) {
-                $data[$key]->contentlink = Url::home($value->sortfilename . '/' . $value->id, true);
-            } elseif ($value->filename) {
-                $data[$key]->contentlink = Url::home($urlname . $url_break_char . $value->scode . '/' . $value->filename, true);
-            } else {
-                $data[$key]->contentlink = Url::home($urlname . $url_break_char . $value->scode . '/' . $value->id, true);
-            }
+            $data[$key]->contentlink = $Parser->parserLink(2, $value->urlname, 'content', $value->scode, $value->sortfilename, $value->id, $value->filename);
         }
         
         // 输出数据
@@ -427,7 +419,7 @@ class CmsController extends Controller
             if ($this->model->addMessage($value->table_name, $data)) {
                 $this->log('API提交留言数据成功！');
                 if ($this->config('message_send_mail') && $this->config('message_send_to')) {
-                    $mail_subject = "【PbootCMS】您有新的" . $value->form_name . "信息，请注意查收！";
+                    $mail_subject = "【'.CMSNAME.'】您有新的" . $value->form_name . "信息，请注意查收！";
                     $mail_body .= '<br>来自网站' . get_http_url() . '（' . date('Y-m-d H:i:s') . '）';
                     sendmail($this->config(), $this->config('message_send_to'), $mail_subject, $mail_body);
                 }
@@ -509,7 +501,7 @@ class CmsController extends Controller
             if ($this->model->addForm($value->table_name, $data)) {
                 $this->log('API提交表单数据成功！');
                 if ($this->config('form_send_mail') && $this->config('message_send_to')) {
-                    $mail_subject = "【PbootCMS】您有新的" . $value->form_name . "信息，请注意查收！";
+                    $mail_subject = "【'.CMSNAME.'】您有新的" . $value->form_name . "信息，请注意查收！";
                     $mail_body .= '<br>来自网站' . get_http_url() . '（' . date('Y-m-d H:i:s') . '）';
                     sendmail($this->config(), $this->config('message_send_to'), $mail_subject, $mail_body);
                 }

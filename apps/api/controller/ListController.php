@@ -11,6 +11,7 @@ namespace app\api\controller;
 use core\basic\Controller;
 use app\api\model\CmsModel;
 use core\basic\Url;
+use app\home\controller\ParserController;
 
 class ListController extends Controller
 {
@@ -82,7 +83,7 @@ class ListController extends Controller
         
         // 读取数据
         $data = $this->model->getLists($acode, $scode, $num, $order);
-        $url_break_char = $this->config('url_break_char') ?: '_';
+        $Parser = new ParserController();
         
         foreach ($data as $key => $value) {
             if ($value->outlink) {
@@ -95,16 +96,7 @@ class ListController extends Controller
             $data[$key]->content = str_replace(STATIC_DIR . '/upload/', get_http_url() . STATIC_DIR . '/upload/', $value->content);
             
             // 返回网页链接地址，便于AJAX调用内容
-            $urlname = $value->urlname ?: 'list';
-            if ($value->sortfilename && $value->filename) {
-                $data[$key]->contentlink = Url::home($value->sortfilename . '/' . $value->filename, true);
-            } elseif ($value->sortfilename) {
-                $data[$key]->contentlink = Url::home($value->sortfilename . '/' . $value->id, true);
-            } elseif ($value->filename) {
-                $data[$key]->contentlink = Url::home($urlname . $url_break_char . $value->scode . '/' . $value->filename, true);
-            } else {
-                $data[$key]->contentlink = Url::home($urlname . $url_break_char . $value->scode . '/' . $value->id, true);
-            }
+            $data[$key]->contentlink = $Parser->parserLink(2, $value->urlname, 'content', $value->scode, $value->sortfilename, $value->id, $value->filename);
         }
         
         // 输出数据

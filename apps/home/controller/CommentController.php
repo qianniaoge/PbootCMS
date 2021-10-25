@@ -4,7 +4,7 @@
  * @author XingMeng
  * @email hnxsh@foxmail.com
  * @date 2020年06月27日
- *  评论控制器     
+ *  评论控制器
  */
 namespace app\home\controller;
 
@@ -91,7 +91,7 @@ class CommentController extends Controller
                 session('lastsub', time()); // 记录最后提交时间
                 $this->log('文章' . $contentid . '评论提交成功！');
                 if ($this->config('comment_send_mail') && $this->config('message_send_to')) {
-                    $mail_subject = "【PbootCMS】您有新的文章评论信息，请注意查收！";
+                    $mail_subject = "【'.CMSNAME.'】您有新的文章评论信息，请注意查收！";
                     $mail_body = '评论内容：' . $comment . '<br>';
                     $mail_body .= '<br>来自网站 ' . get_http_url() . ' （' . date('Y-m-d H:i:s') . '）';
                     sendmail($this->config(), $this->config('message_send_to'), $mail_subject, $mail_body);

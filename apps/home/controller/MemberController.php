@@ -441,7 +441,7 @@ class MemberController extends Controller
         $rs = false;
         if ($to) {
             session('lastsend', time()); // 记录最后提交时间
-            $mail_subject = "【PbootCMS】您有新的验证码信息，请注意查收！";
+            $mail_subject = "【'.CMSNAME.'】您有新的验证码信息，请注意查收！";
             $code = create_code(4);
             session('checkcode', strtolower($code));
             $mail_body = "您的验证码为：" . $code;

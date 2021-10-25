@@ -16,7 +16,7 @@ class ContentModel extends Model
     protected $scodes = array();
 
     // 获取文章列表
-    public function getList($mcode)
+    public function getList($mcode, $where = array())
     {
         $field = array(
             'a.id',
@@ -61,6 +61,7 @@ class ContentModel extends Model
             ->where("b.mcode='$mcode'")
             ->where('d.type=2 OR d.type is null ')
             ->where("a.acode='" . session('acode') . "'")
+            ->where($where)
             ->join($join)
             ->order('a.sorting ASC,a.id DESC')
             ->page()

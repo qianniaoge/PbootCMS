@@ -19,6 +19,9 @@ class HomeController extends Controller
         // 自动缓存基础信息
         cache_config();
         
+        // 从配置文件读取cmsname参数来设置系统名称
+        define("CMSNAME", $this->config("cmsname") ?: 'PbootCMS');
+        
         // 站点关闭检测
         if (! ! $close_site = Config::get('close_site')) {
             $close_site_note = Config::get('close_site_note');

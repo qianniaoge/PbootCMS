@@ -214,7 +214,7 @@ class DatabaseController extends Controller
             $sql .= $brackets;
             $comma = "";
             for ($i = 0; $i < $fieldNnum; $i ++) {
-                $sql .= ($comma . "'" . decode_string($value[$i]) . "'");
+                $sql .= ($comma . "'" . addslashes(decode_string($value[$i])) . "'");
                 $comma = ",";
             }
             $sql .= ")";

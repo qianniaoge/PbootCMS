@@ -11,6 +11,7 @@ namespace app\api\controller;
 use core\basic\Controller;
 use app\api\model\CmsModel;
 use core\basic\Url;
+use app\home\controller\ParserController;
 
 class ContentController extends Controller
 {
@@ -38,21 +39,9 @@ class ContentController extends Controller
                 $data->likeslink = url('/home/Do/likes/id/' . $data->id, false);
                 $data->opposelink = url('/home/Do/oppose/id/' . $data->id, false);
                 
-                $url_break_char = $this->config('url_break_char') ?: '_';
-                $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
-                $urlname = $data->urlname ?: 'list';
-                
                 // 返回网页链接地址
-                if ($data->sortfilename && $data->filename) {
-                    $data->contentlink = Url::home($data->sortfilename . '/' . $data->filename, true);
-                } elseif ($data->sortfilename) {
-                    $data->contentlink = Url::home($data->sortfilename . '/' . $data->id, true);
-                } elseif ($data->filename) {
-                    $data->contentlink = Url::home($urlname . $url_break_char . $data->scode . '/' . $data->filename, true);
-                } else {
-                    $data->contentlink = Url::home($urlname . $url_break_char . $data->scode . '/' . $data->id, true);
-                }
-                
+                $Parser = new ParserController();
+                $data->contentlink = $Parser->parserLink(2, $data->urlname, 'content', $data->scode, $data->sortfilename, $data->id, $data->filename);
                 $data->content = str_replace(STATIC_DIR . '/upload/', get_http_url() . STATIC_DIR . '/upload/', $data->content);
                 json(1, $data);
             } else {

@@ -264,25 +264,23 @@ class IndexController extends Controller
                 opcache_reset(); // 在启用了OPcache加速器时同时清理
             }
             $this->log('清理缓存成功！');
-            alert_back('清理缓存成功！');
+            alert_back('清理缓存成功！', 1);
         } else {
             $this->log('清理缓存失败！');
-            alert_back('清理缓存失败！');
+            alert_back('清理缓存失败！', 0);
         }
     }
 
     // 清理会话
     public function clearSession()
     {
-        $rs = path_delete(RUN_PATH . '/session');
-        
-        if ($rs) {
-            $this->log('清理会话成功！');
-            alert_back('清理会话成功！');
-        } else {
-            $this->log('清理会话失败！');
-            alert_back('清理会话失败！');
-        }
+        ignore_user_abort(true); // 后台运行
+        set_time_limit(3600);
+        ob_start();
+        alert_back('清理会话成功！', 1);
+        ob_end_flush();
+        flush();
+        $rs = path_delete(RUN_PATH . '/session', false, 'sess_' . session_id());
     }
 
     // 文件上传方法

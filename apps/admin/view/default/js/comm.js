@@ -86,6 +86,26 @@ $(document).ready(function (e) {
       $(this).removeClass("fa-toggle-off");
       return false;
     })
+    
+    $('.ajaxlink').on("click",function(){
+    	 var url=$(this).attr("href");
+    	 $.ajax({
+		    type: 'GET',
+		    url: url,
+		    dataType: 'json',
+		    data: {},
+		    success: function (response, status) {
+		    	alert(response.data);
+		    	if(response.tourl!=""){
+		    		location.href=response.tourl; 
+		    	}
+		    },
+		    error:function(xhr,status,error){
+		      alert('返回数据异常！');
+		    }
+		  });
+      return false;
+   })
 
 
 })
