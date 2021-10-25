@@ -26,7 +26,7 @@
                 <tbody>
                     {foreach $slides(key,value)}
                     <tr>
-                    	<td>分组[value->gid]</td>
+                    	<td>[value->gid]</td>
                         <td><img src="{SITE_DIR}[value->pic]" style="height:30px;"></td>
                         <td>[value->link]</td>
                         <td>[value->title]</td>
@@ -123,15 +123,11 @@
 	  	<div class="layui-tab-item layui-show">
 	  		<form action="{url./admin/Slide/mod/id/'.[$get.id].'}{$backurl}" method="post" class="layui-form">
 	  			<input type="hidden" name="formcheck" value="{$formcheck}" > 
-	  			<div class="layui-form-item">
+	  			
+                <div class="layui-form-item">
                      <label class="layui-form-label">分组</label>
                      <div class="layui-input-block">
-                     	<select name="gid">	
-	                		{foreach $gids(key,value)}
-	                			<option value="[value]" {if([$slide->gid]==$value)}selected{/if}>分组[value]</option>
-	                		{/foreach}
-	                		<option value="" >自动新增分组</option>
-	                	</select>
+                     	<input type="text" name="gid" required  lay-verify="required" value="{$slide->gid}" placeholder="请输入分组"  class="layui-input">
                      </div>
                 </div>
                 

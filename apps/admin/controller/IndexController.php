@@ -275,9 +275,9 @@ class IndexController extends Controller
     public function clearSession()
     {
         ignore_user_abort(true); // 后台运行
-        set_time_limit(3600);
+        set_time_limit(7200);
         ob_start();
-        alert_back('清理会话成功！', 1);
+        alert_back('执行成功，后台自动清理中!', 1);
         ob_end_flush();
         flush();
         $rs = path_delete(RUN_PATH . '/session', false, 'sess_' . session_id());
