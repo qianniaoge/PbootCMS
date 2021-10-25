@@ -72,7 +72,7 @@ class SitemapController extends Controller
     {
         $sorts = $this->model->getSorts();
         $Parser = new ParserController();
-        $str = '';
+        $str = get_http_url() . "\n";
         foreach ($sorts as $value) {
             if ($value->outlink) {
                 continue;
