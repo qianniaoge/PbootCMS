@@ -277,10 +277,15 @@ class IndexController extends Controller
         ignore_user_abort(true); // 后台运行
         set_time_limit(7200);
         ob_start();
-        alert_back('执行成功，后台自动清理中!', 1);
+        $output['code'] = 1;
+        $output['data'] = '执行成功，后台自动清理中!';
+        $output['tourl'] = '';
+        echo json_encode($output);
         ob_end_flush();
         flush();
-        $rs = path_delete(RUN_PATH . '/session', false, 'sess_' . session_id());
+        $rs = path_delete(RUN_PATH . '/session', false, array(
+            'sess_' . session_id()
+        ));
     }
 
     // 文件上传方法

@@ -125,7 +125,7 @@ function path_delete($path, $delDir = false, $exFile = array())
             foreach ($dirs as $value) {
                 if ($value != "." && $value != ".." && ! in_array($value, $exFile)) {
                     $dir = $path . '/' . $value;
-                    $result = is_dir($dir) ? path_delete($dir, $delDir) : unlink($dir);
+                    $result = is_dir($dir) ? path_delete($dir, $delDir, $exFile) : unlink($dir);
                 }
             }
             if ($result && $delDir) {
