@@ -41,13 +41,10 @@ class ContentController extends Controller
                 } else {
                     $result = $this->model->findContentAll($mcode, get('keyword', 'vars'));
                 }
+            } elseif (! ! $scode = get('scode', 'int')) {
+                $result = $this->model->findContent($mcode, $scode, '');
             } else {
-                if (! ! $scode = get('scode', 'int')) {
-                    $where['a.scode'] = $scode;
-                } else {
-                    $where = array();
-                }
-                $result = $this->model->getList($mcode, $where);
+                $result = $this->model->getList($mcode);
             }
             $this->assign('contents', $result);
             

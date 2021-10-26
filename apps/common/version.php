@@ -7,6 +7,6 @@ return array(
     'release_time' => '20211026',
     
     // 修订版本
-    'revise_version' => '4'
+    'revise_version' => '5'
 
 );
