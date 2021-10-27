@@ -16,7 +16,7 @@ class SpiderController extends Controller
 
     private $url;
 
-    public function __construct($url)
+    public function __construct($url = null)
     {
         $this->url = base64_decode($url ?: get('url'));
     }
