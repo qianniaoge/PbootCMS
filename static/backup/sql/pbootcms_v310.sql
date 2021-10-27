@@ -796,7 +796,7 @@ CREATE TABLE `ay_extfield` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '编号',
   `mcode` varchar(20) NOT NULL COMMENT '模型编码',
   `name` varchar(30) NOT NULL COMMENT '字段名称',
-  `type` char(1) NOT NULL COMMENT '字段类型',
+  `type` char(2) NOT NULL COMMENT '字段类型',
   `value` varchar(500) NOT NULL COMMENT '单选或多选值',
   `description` varchar(30) NOT NULL COMMENT '描述文本',
   `sorting` int(11) NOT NULL COMMENT '排序',
