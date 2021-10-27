@@ -179,10 +179,10 @@ class ParserController extends Controller
                                                                                                                     
         // 记录蜘蛛爬行
         if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
-            $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . base64_encode(URL)) . "' async='async'></script>";
+            $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . URL) . "' async='async'></script>";
             $content = preg_replace('/(<\/body>)/i', $spidercode . "\n$1", $content);
         } else {
-            $spider = new SpiderController(base64_encode(URL));
+            $spider = new SpiderController(URL);
             $spider->index();
         }
         
