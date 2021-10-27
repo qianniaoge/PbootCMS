@@ -105,6 +105,10 @@ class IndexController extends Controller
                     $comment = new CommentController();
                     $comment->{$path_arr[1]}();
                     break;
+                case 'spider':
+                    $spider = new SpiderController();
+                    $spider->index();
+                    break;
                 default:
                     
                     $url_break_char = $this->config('url_break_char') ?: '_';

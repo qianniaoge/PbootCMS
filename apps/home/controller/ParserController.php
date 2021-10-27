@@ -176,6 +176,15 @@ class ParserController extends Controller
         $content = str_replace('{pboot:registerstatus}', $this->config('register_status') === '0' ? 0 : 1, $content); // 是否开启注册
         $content = str_replace('{pboot:loginstatus}', $this->config('login_status') === '0' ? 0 : 1, $content); // 是否开启登录
         $content = str_replace('{pboot:commentstatus}', $this->config('comment_status') === '0' ? 0 : 1, $content); // 是否开启评论
+                                                                                                                    
+        // 记录蜘蛛爬行
+        if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
+            $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . base64_encode(URL)) . "' async='async'></script>";
+            $content = preg_replace('/(<\/body>)/i', $spidercode . "\n$1", $content);
+        } else {
+            $spider = new SpiderController(base64_encode(URL));
+            $spider->index();
+        }
         
         return $content;
     }
