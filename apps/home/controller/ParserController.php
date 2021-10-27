@@ -405,6 +405,8 @@ class ParserController extends Controller
                 }
                 $parent = 0;
                 $num = 0;
+                $scode = 0;
+                $scode_arr = array();
                 foreach ($params as $key => $value) {
                     switch ($key) {
                         case 'parent':
@@ -413,14 +415,20 @@ class ParserController extends Controller
                         case 'num':
                             $num = $value;
                             break;
+                        case 'scode':
+                            $scode = $value;
+                            $scode_arr = explode(',', $scode);
+                            break;
                     }
                 }
                 
-                if ($parent) { // 非顶级栏目起始
-                    if (isset($data['tree'][$parent]['son'])) {
-                        $out_data = $data['tree'][$parent]['son'];
-                    } else {
-                        $out_data = array();
+                if ($parent) { // 非顶级栏目起始,调用子栏目
+                    $parent_arr = explode(',', $parent);
+                    $out_data = array();
+                    foreach ($parent_arr as $vp) {
+                        if (isset($data['tree'][trim($vp)]['son'])) {
+                            $out_data = array_merge($out_data, $data['tree'][trim($vp)]['son']);
+                        }
                     }
                 } else { // 顶级栏目起始
                     $out_data = $data['top'];
@@ -441,6 +449,9 @@ class ParserController extends Controller
                 $out_html = '';
                 $key = 1;
                 foreach ($out_data as $value) { // 按查询的数据条数循环
+                    if ($scode_arr && ! in_array($value['scode'], $scode_arr)) {
+                        continue;
+                    }
                     $one_html = $matches[2][$i];
                     if ($count2) {
                         for ($j = 0; $j < $count2; $j ++) { // 循环替换数据
