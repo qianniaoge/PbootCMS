@@ -67,7 +67,8 @@ class SitemapModel extends Model
         
         $where = array(
             'a.status=1',
-            'c.type=2'
+            'c.type=2',
+            "a.date<'" . date('Y-m-d H:i:s') . "'"
         );
         
         return parent::table('ay_content a')->field($fields)

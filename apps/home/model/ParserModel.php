@@ -533,6 +533,7 @@ class ParserModel extends Model
         $result = parent::table('ay_content a')->field($field)
             ->where("a.id='$id' OR a.filename='$id'")
             ->where('a.status=1')
+            ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
             ->join($join)
             ->decode()
             ->find();
@@ -603,6 +604,7 @@ class ParserModel extends Model
             ->join($join)
             ->where("a.id='$id'")
             ->where('a.status=1')
+            ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
             ->find();
         return $result;
     }
@@ -620,6 +622,7 @@ class ParserModel extends Model
         $result = parent::table('ay_content')->field('scode,tags')
             ->where("id='$id'")
             ->where('status=1')
+            ->where("date<'" . date('Y-m-d H:i:s') . "'")
             ->find();
         return $result;
     }
@@ -699,6 +702,7 @@ class ParserModel extends Model
                 ->in('a.scode', $scodes)
                 ->where("a.acode='" . get_lg() . "'")
                 ->where('a.status=1')
+                ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
                 ->order('a.id DESC')
                 ->find();
         }
@@ -742,6 +746,7 @@ class ParserModel extends Model
                 ->in('a.scode', $scodes)
                 ->where("a.acode='" . get_lg() . "'")
                 ->where('a.status=1')
+                ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
                 ->order('a.id ASC')
                 ->find();
         }

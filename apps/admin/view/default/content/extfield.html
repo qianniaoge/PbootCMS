@@ -183,12 +183,15 @@
 	                    		<option value="8" selected>编辑器</option>
 	                    	{/if}
 	                    	
-	                    	{if([$extfield->type]!=2 && [$extfield->type]!=7 && [$extfield->type]!=8)}
+	                    	{if([$extfield->type]==10)}
+	                    		<option value="10" selected>多图上传</option>
+	                    	{/if}
+	                    	
+	                    	{if([$extfield->type]!=2 && [$extfield->type]!=7 && [$extfield->type]!=8 && [$extfield->type]!=10)}
 	                    		<option value="1" {if([$extfield->type]==1)}selected{/if}>单行文本</option>
 	                    		<option value="3" {if([$extfield->type]==3)}selected{/if}>单选按钮</option>
 	                    		<option value="4" {if([$extfield->type]==4)}selected{/if}>多选按钮</option>
 	                    		<option value="5" {if([$extfield->type]==5)}selected{/if}>单图上传</option>
-	                    		<option value="10" {if([$extfield->type]==10)}selected{/if}>多图上传</option>
 	                    		<option value="6" {if([$extfield->type]==6)}selected{/if}>附件上传</option>
 	                    		<option value="9" {if([$extfield->type]==9)}selected{/if}>下拉选择</option>
 	                    	{/if}

@@ -27,7 +27,7 @@ class SitemapController extends Controller
         header("Content-type:text/xml;charset=utf-8");
         $str = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $str .= '<urlset>' . "\n";
-        $str .= $this->makeNode('', date('Y-m-d'), '1.00'); // 根目录
+        $str .= $this->makeNode('', date('Y-m-d'), '1.00', 'always'); // 根目录
         
         $sorts = $this->model->getSorts();
         $Parser = new ParserController();
@@ -36,10 +36,10 @@ class SitemapController extends Controller
                 continue;
             } elseif ($value->type == 1) {
                 $link = $Parser->parserLink(1, $value->urlname, 'about', $value->scode, $value->filename);
-                $str .= $this->makeNode($link, date('Y-m-d'), '0.80');
+                $str .= $this->makeNode($link, date('Y-m-d'), '0.80', 'daily');
             } else {
                 $link = $Parser->parserLink(2, $value->urlname, 'list', $value->scode, $value->filename);
-                $str .= $this->makeNode($link, date('Y-m-d'), '0.80');
+                $str .= $this->makeNode($link, date('Y-m-d'), '0.80', 'daily');
                 $contents = $this->model->getSortContent($value->scode);
                 foreach ($contents as $value2) {
                     if ($value2->outlink) { // 外链
@@ -47,7 +47,7 @@ class SitemapController extends Controller
                     } else {
                         $link = $Parser->parserLink(2, $value2->urlname, 'content', $value2->scode, $value2->sortfilename, $value2->id, $value2->filename);
                     }
-                    $str .= $this->makeNode($link, date('Y-m-d'), '0.60');
+                    $str .= $this->makeNode($link, date('Y-m-d', strtotime($value2->date)), '0.60', 'daily');
                 }
             }
         }
@@ -55,14 +55,14 @@ class SitemapController extends Controller
     }
 
     // 生成结点信息
-    private function makeNode($link, $date, $priority = 0.60)
+    private function makeNode($link, $date, $priority = 0.60, $changefreq = 'always')
     {
         $node = '
 <url>
     <loc>' . get_http_url() . $link . '</loc>
     <priority>' . $priority . '</priority>
     <lastmod>' . $date . '</lastmod>
-    <changefreq>Always</changefreq>
+    <changefreq>' . $changefreq . '</changefreq>
 </url>';
         return $node;
     }

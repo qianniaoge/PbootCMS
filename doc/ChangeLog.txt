@@ -2,6 +2,9 @@
 官方网站：https://www.pbootcms.com
 标签手册：https://www.pbootcms.com/docs.html
 ##########################################
+PbootCMS V3.1.2 build 2021-10-27
+1、修复扩展多图字段编码长度问题；
+2、修复sitemap未过滤未发布文章问题；
 
 PbootCMS V3.1.1 build 2021-10-26
 1、修复上版本sitemap短路径模式不统一问题；
