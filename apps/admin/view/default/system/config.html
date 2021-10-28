@@ -92,6 +92,15 @@
 		                </div>
 		                
 		                <div class="layui-form-item">
+		                     <label class="layui-form-label">记录蜘蛛访问</label>
+		                     <div class="layui-input-block">
+		                     	<input type="radio" name="spiderlog" value="1" {if([$configs.spiderlog.value]=='1'||[$configs.spiderlog.value]=='')} checked="checked" {/if} title="启用">
+								<input type="radio" name="spiderlog" value="0" {if([$configs.spiderlog.value]=='0')} checked="checked" {/if} title="禁用">
+		                     	<span class="layui-icon layui-icon-about tips" data-content="开启后自动在系统日志进行记录！"></span>
+		                     </div>
+		                </div>
+		                
+		                <div class="layui-form-item">
 		                     <label class="layui-form-label">自动转HTTPS</label>
 		                     <div class="layui-input-block">
 		                     	<input type="radio" name="to_https" value="1" {if([$configs.to_https.value]==1)} checked="checked" {/if} title="启用">

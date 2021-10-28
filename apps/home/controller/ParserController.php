@@ -178,12 +178,14 @@ class ParserController extends Controller
         $content = str_replace('{pboot:commentstatus}', $this->config('comment_status') === '0' ? 0 : 1, $content); // 是否开启评论
                                                                                                                     
         // 记录蜘蛛爬行
-        if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
-            $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . URL) . "' async='async'></script>";
-            $content = preg_replace('/(<\/body>)/i', $spidercode . "\n$1", $content);
-        } else {
-            $spider = new SpiderController(URL);
-            $spider->index();
+        if ($this->config('spiderlog') !== '0') {
+            if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
+                $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . URL) . "' async='async'></script>";
+                $content = preg_replace('/(<\/body>)/i', $spidercode . "\n$1", $content);
+            } else {
+                $spider = new SpiderController(URL);
+                $spider->index();
+            }
         }
         
         return $content;
