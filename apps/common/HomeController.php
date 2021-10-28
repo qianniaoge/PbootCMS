@@ -41,6 +41,7 @@ class HomeController extends Controller
                 } else {
                     header("Location: http://" . $main_domain . ':' . $_SERVER['SERVER_PORT'], true, 301);
                 }
+                exit();
             }
         }
         
@@ -95,7 +96,8 @@ class HomeController extends Controller
                 } else {
                     $pre = 'http://';
                 }
-                header('Location:' . $pre . $this->config('wap_domain') . URL, true, 301); // 手机访问并且绑定了域名，但是访问域名不一致则跳转
+                header('Location:' . $pre . $this->config('wap_domain') . URL, true, 302); // 手机访问并且绑定了域名，但是访问域名不一致则跳转
+                exit();
             } elseif (is_mobile()) { // 其他情况手机访问则自动手机版本
                 $this->setTheme(get_theme() . '/wap');
             } else { // 其他情况，电脑版本
