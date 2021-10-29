@@ -70,6 +70,7 @@ class SitemapController extends Controller
     // 文本格式
     public function linkTxt()
     {
+        header("Content-type:text/plain;charset=utf-8");
         $sorts = $this->model->getSorts();
         $Parser = new ParserController();
         $str = get_http_url() . "\n";
