@@ -3809,7 +3809,7 @@ class ParserController extends Controller
     }
 
     // 解析生成内容链接
-    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id = '', $contentfilename = '', $page = 1)
+    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id = '', $contentfilename = '')
     {
         $url_break_char = $this->config('url_break_char') ?: '_';
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
@@ -3825,15 +3825,10 @@ class ParserController extends Controller
         } else {
             $urlname = $urlname ?: 'list';
             if ($pagetype == 'list') {
-                if ($page > 1) {
-                    $pagestr = $url_break_char . $page;
-                } else {
-                    $pagestr = '';
-                }
                 if ($sortfilename) {
-                    $link = Url::home($sortfilename . $pagestr, null, null, true);
+                    $link = Url::home($sortfilename, null, null, true);
                 } else {
-                    $link = Url::home($urlname . $url_break_char . $scode . $pagestr, null, null, true);
+                    $link = Url::home($urlname . $url_break_char . $scode, null, null, true);
                 }
             } elseif ($pagetype == 'content') {
                 if ($url_rule_content_path) {
