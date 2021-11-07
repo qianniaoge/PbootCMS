@@ -2,6 +2,8 @@
 官方网站：https://www.pbootcms.com
 标签手册：https://www.pbootcms.com/docs.html
 ##########################################
+PbootCMS V3.1.3 build 2021-11-XX
+1、新增静态生成功能；
 
 PbootCMS V3.1.2 build 2021-10-28
 1、修复扩展多图字段编码长度问题；
