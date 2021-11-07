@@ -555,6 +555,11 @@
 		                     	<P>
 									<input type="radio" name="url_rule_type" value="3" {if([$configs.url_rule_type.value]==3||![$configs.url_rule_type.value])} checked="checked" {/if} title="兼容模式，类似：/?product/1.html">
 								</P>
+								
+								<P>
+									<input type="radio" name="url_rule_type" value="4" {if([$configs.url_rule_type.value]==4)} checked="checked" {/if} title="静态模式">
+									<span class="layui-icon layui-icon-about tips" data-content="静态时需到生成静态节点进行页面生成！"></span>
+								</P>
 		                     </div>
 		                </div>
 		                

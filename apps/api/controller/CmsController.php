@@ -347,7 +347,7 @@ class CmsController extends Controller
         }
         
         // 输出数据
-        if (request('page') <= PAGECOUNT) {
+        if (request('page') <= $this->getVar('pagecount')) {
             json(1, $data);
         } else {
             return json(0, '已经到底了！');
@@ -364,7 +364,7 @@ class CmsController extends Controller
         // 获取栏目数
         $data = $this->model->getMessage($acode, $num);
         
-        if (request('page') <= PAGECOUNT) {
+        if (request('page') <= $this->getVar('pagecount')) {
             json(1, $data);
         } else {
             return json(0, '已经到底了！');
@@ -451,7 +451,7 @@ class CmsController extends Controller
         // 获取表数据
         $data = $this->model->getForm($table, $num);
         
-        if (request('page') <= PAGECOUNT) {
+        if (request('page') <= $this->getVar('pagecount')) {
             json(1, $data);
         } else {
             return json(0, '已经到底了！');

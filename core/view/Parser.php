@@ -4,7 +4,7 @@
  * @author XingMeng
  * @email hnxsh@foxmail.com
  * @date 2016年11月6日
- *  模板解析引擎 
+ *  模板解析引擎
  */
 namespace core\view;
 
@@ -22,6 +22,8 @@ class Parser
     // 包含文件
     private static $tplInc = array();
 
+    private static $vars = array();
+
     /**
      * 编译公共方法
      *
@@ -31,10 +33,13 @@ class Parser
      *            需要解析的模板文件，需要是物理路径
      * @return string|mixed
      */
-    public static function compile($tplPath, $tplFile)
+    public static function compile($tplPath, $tplFile, $vars)
     {
         // 接收模板目录参数
         self::$tplPath = $tplPath;
+        
+        // 模板变量
+        self::$vars = $vars;
         
         // 读取模板内容
         $content = file_get_contents($tplFile) ?: error('模板文件读取错误！' . $tplFile);
@@ -102,7 +107,7 @@ class Parser
                 } elseif (! ! $pos = strpos($brr[$i], '@')) {
                     $inc_file = APP_PATH . '/' . substr($brr[$i], 0, $pos) . '/view/' . basename(self::$tplPath) . '/' . substr($brr[$i], $pos + 1);
                 } else {
-                    if (M == 'home') { // 前台适应模板子目录
+                    if (M == 'home' || defined('MAKEHTML')) { // 前台适应模板子目录
                         $htmldir = Config::get('tpl_html_dir') ? Config::get('tpl_html_dir') . '/' : '';
                         $inc_file = self::$tplPath . '/' . $htmldir . $brr[$i];
                     } else {
@@ -292,8 +297,8 @@ class Parser
                 // 解析序号
                 $pattern_num = '/\[(' . $matches[5][$i] . ')\]/';
                 if (preg_match($pattern_num, self::$content)) {
-                    if (defined('PAGE')) {
-                        self::$content = preg_replace($pattern_num, "<?php echo @(PAGE-1)*PAGESIZE+\$$1; ?>", self::$content);
+                    if (self::$vars['page'] > 1) {
+                        self::$content = preg_replace($pattern_num, "<?php echo @(\$this->getVar('page')-1)*(\$this->getVar('pagesize'))+\$$1; ?>", self::$content);
                     } else {
                         self::$content = preg_replace($pattern_num, "<?php echo \$$1; ?>", self::$content);
                     }
@@ -333,8 +338,8 @@ class Parser
                 // 解析序号
                 $pattern_num = '/\[(' . $matches[5][$i] . ')\]/';
                 if (preg_match($pattern_num, self::$content)) {
-                    if (defined('PAGE')) {
-                        self::$content = preg_replace($pattern_num, "<?php echo (PAGE-1)*PAGESIZE+\$$1; ?>", self::$content);
+                    if (self::$vars['page'] > 1) {
+                        self::$content = preg_replace($pattern_num, "<?php echo (\$this->getVar('page')-1)*(\$this->getVar('pagesize'))+\$$1; ?>", self::$content);
                     } else {
                         self::$content = preg_replace($pattern_num, "<?php echo \$$1; ?>", self::$content);
                     }
@@ -374,8 +379,8 @@ class Parser
                 // 解析序号
                 $pattern_num = '/\[(' . $matches[6][$i] . ')\]/';
                 if (preg_match($pattern_num, self::$content)) {
-                    if (defined('PAGE')) {
-                        self::$content = preg_replace($pattern_num, "<?php echo @(PAGE-1)*PAGESIZE+\$$1; ?>", self::$content);
+                    if (self::$vars['page'] > 1) {
+                        self::$content = preg_replace($pattern_num, "<?php echo @(\$this->getVar('page')-1)*(\$this->getVar('pagesize'))+\$$1; ?>", self::$content);
                     } else {
                         self::$content = preg_replace($pattern_num, "<?php echo \$$1; ?>", self::$content);
                     }

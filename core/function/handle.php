@@ -906,9 +906,19 @@ function strlen_both($string)
 function query_string($unset = null)
 {
     if (isset($_SERVER["QUERY_STRING"]) && ! ! $qs = $_SERVER["QUERY_STRING"]) {
-        parse_str($qs, $output);
-        unset($output['page']);
         $unset = strpos($unset, ',') ? explode(',', $unset) : $unset;
+        parse_str($qs, $output);
+        
+        // 兼容模式时去掉路径参数
+        $url_rule_type = Config::get('url_rule_type') ?: 3;
+        $str = '?';
+        if ($url_rule_type > 2) {
+            $path_qs = key($output);
+            if (! $output[$path_qs]) {
+                unset($output[$path_qs]); // 去除路径参数
+                $str = '&';
+            }
+        }
         
         if (is_array($unset)) {
             foreach ($unset as $value) {
@@ -921,16 +931,9 @@ function query_string($unset = null)
                 unset($output[$unset]);
             }
         }
-        // 避免路径参数编码
-        if (isset($output['p'])) {
-            $p = 'p=' . $output['p'];
-            unset($output['p']);
-            $qs = $output ? $p . '&' . http_build_query($output) : $p;
-        } else {
-            $qs = http_build_query($output);
-        }
+        $qs = urldecode(http_build_query($output));
     }
-    return $qs ? '?' . $qs : '';
+    return $qs;
 }
 
 // 判断是否在子网

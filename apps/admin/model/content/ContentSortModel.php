@@ -42,10 +42,18 @@ class ContentSortModel extends Model
     // 获取内容栏目选择列表
     public function getSelect()
     {
-        $result = parent::table('ay_content_sort')->field('pcode,scode,name')
-            ->where("acode='" . session('acode') . "'")
-            ->order('pcode,sorting,id')
+        $join = array(
+            'ay_model b',
+            'a.mcode=b.mcode',
+            'LEFT'
+        );
+        
+        $result = parent::table('ay_content_sort a')->field('a.pcode,a.scode,a.name,b.type')
+            ->join($join)
+            ->where("a.acode='" . session('acode') . "'")
+            ->order('a.pcode,a.sorting,a.id')
             ->select();
+        
         $tree = get_tree($result, 0, 'scode', 'pcode');
         return $tree;
     }

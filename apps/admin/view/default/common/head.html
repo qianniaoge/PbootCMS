@@ -99,6 +99,7 @@
 						<dd><a href="{url./admin/Content/index/mcode/'.$value3->mcode.'}"><i class="fa fa-file-text-o" aria-hidden="true"></i>[value3->name]内容</a></dd>
 					{/if}
 				 {/foreach}
+				 <dd><a href="{url./admin/MakeHtml/index}"><i class="fa fa-code" aria-hidden="true"></i>生成静态</a></dd>
 			{else}
 				{foreach $value->son(key2,value2,num2)}
 					{if(!isset($value2->status)|| $value2->status==1)}

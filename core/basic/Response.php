@@ -35,16 +35,6 @@ class Response
         $output['data'] = $data ?: array();
         $output['tourl'] = $tourl ?: "";
         
-        if (defined('ROWTOTAL')) {
-            $output['rowtotal'] = ROWTOTAL;
-        } else {
-            if (is_array($data) || is_object($data)) {
-                $output['rowtotal'] = count($data);
-            } else {
-                $output['rowtotal'] = 1;
-            }
-        }
-        
         if (PHP_VERSION >= 5.4) { // 中文不编码 5.4+
             $option = JSON_UNESCAPED_UNICODE;
         } else {

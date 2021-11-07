@@ -4,7 +4,7 @@
  * @author XingMeng
  * @email hnxsh@foxmail.com
  * @date 2017年10月15日
- *  配置信息读取类 
+ *  配置信息读取类
  */
 namespace core\basic;
 
@@ -52,10 +52,9 @@ class Config
     }
 
     // 写入配置文件
-    public static function set($itemName, array $data, $multistage = false, $assign = true)
+    public static function set($itemName, array $data, $multistage = false, $save = true)
     {
         if ($data) {
-            $path = RUN_PATH . '/config/' . $itemName . '.php';
             
             // 是否使用多级
             if ($multistage) {
@@ -68,15 +67,24 @@ class Config
                 $config = $data;
             }
             
-            // 写入
-            if (check_file($path, true)) {
-                $result = file_put_contents($path, "<?php\nreturn " . var_export($config, true) . ";");
-                if ($assign) { // 缓存后是否注入配置
-                    self::assign($path);
-                }
-                return $result;
-            } else {
+            if (! is_array($config))
                 return false;
+            
+            if (self::$configs) {
+                $configs = mult_array_merge(self::$configs, $config);
+            } else {
+                $configs = $config;
+            }
+            self::$configs = $configs;
+            
+            if ($save) { // 缓存后是否注入配置
+                $path = RUN_PATH . '/config/' . $itemName . '.php';
+                if (check_file($path, true)) {
+                    $result = file_put_contents($path, "<?php\nreturn " . var_export($config, true) . ";");
+                    return $result;
+                } else {
+                    return false;
+                }
             }
         }
     }

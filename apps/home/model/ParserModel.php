@@ -212,7 +212,7 @@ class ParserModel extends Model
     }
 
     // 分类子类集
-    private function getSubScodes($scode)
+    public function getSubScodes($scode)
     {
         if (! $scode) {
             return;
@@ -225,6 +225,27 @@ class ParserModel extends Model
             }
         }
         return $this->scodes;
+    }
+
+    // 获取全部栏目编码
+    public function getScodes($type)
+    {
+        $join = array(
+            'ay_model b',
+            'a.mcode=b.mcode',
+            'LEFT'
+        );
+        return parent::table('ay_content_sort a')->join($join)
+            ->in('b.type', $type)
+            ->column('scode');
+    }
+
+    // 获取栏目全部内容ID
+    public function getContentIds($scodes, $where = array())
+    {
+        return parent::table('ay_content')->in('scode', $scodes)
+            ->where($where)
+            ->column('id');
     }
 
     // 获取栏目清单

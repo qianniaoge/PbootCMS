@@ -60,7 +60,7 @@ class View
     {
         if (! empty($var)) {
             if (isset($this->vars[$var])) {
-                error('模板变量$' . $var . '出现重复注入！');
+                // error('模板变量$' . $var . '出现重复注入！');
             }
             $this->vars[$var] = $value;
             return true;
@@ -88,6 +88,7 @@ class View
     {
         // 设置主题
         $theme = isset($this->vars['theme']) ? $this->vars['theme'] : 'default';
+        $this->tplPath = isset($this->vars['tplpath']) ? $this->vars['tplpath'] : $this->tplPath;
         
         $theme = preg_replace_r('{\.\.(\/|\\\\)}', '', $theme); // 过滤掉相对路径
         $file = preg_replace_r('{\.\.(\/|\\\\)}', '', $file); // 过滤掉相对路径
@@ -105,7 +106,7 @@ class View
             $tpl_file = $path . '/' . substr($file, $pos + 1);
         } else {
             // 定义当前应用主题目录
-            define('APP_THEME_DIR', str_replace(DOC_PATH, '', APP_VIEW_PATH) . '/' . $theme);
+            define('APP_THEME_DIR', str_replace(DOC_PATH, '', $this->tplPath) . '/' . $theme);
             if (! is_dir($this->tplPath .= '/' . $theme)) { // 检查主题是否存在
                 error('模板主题目录不存在！主题路径：' . APP_THEME_DIR);
             }
@@ -117,7 +118,7 @@ class View
                                                                        
         // 当编译文件不存在，或者模板文件修改过，则重新生成编译文件
         if (! file_exists($tpl_c_file) || filemtime($tpl_c_file) < filemtime($tpl_file) || ! Config::get('tpl_parser_cache')) {
-            $content = Parser::compile($this->tplPath, $tpl_file); // 解析模板
+            $content = Parser::compile($this->tplPath, $tpl_file, $this->vars); // 解析模板
             file_put_contents($tpl_c_file, $content) ?: error('编译文件' . $tpl_c_file . '生成出错！请检查目录是否有可写权限！'); // 写入编译文件
             $compile = true;
         }
@@ -127,7 +128,7 @@ class View
         if (! isset($compile)) {
             foreach ($rs as $value) { // 检查包含文件是否更新,其中一个包含文件不存在或修改则重新解析模板
                 if (! file_exists($value) || filemtime($tpl_c_file) < filemtime($value) || ! Config::get('tpl_parser_cache')) {
-                    $content = Parser::compile($this->tplPath, $tpl_file); // 解析模板
+                    $content = Parser::compile($this->tplPath, $tpl_file, $this->vars); // 解析模板
                     file_put_contents($tpl_c_file, $content) ?: error('编译文件' . $tpl_c_file . '生成出错！请检查目录是否有可写权限！'); // 写入编译文件
                     ob_clean();
                     include $tpl_c_file;

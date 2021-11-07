@@ -104,10 +104,10 @@ class Url
     }
 
     // 生成前端地址
-    public static function home($path, $suffix = null, $qs = null)
+    public static function home($path, $suffix = null, $qs = null, $isArticle = false)
     {
         if (! isset(self::$urls[md5($path . $suffix . $qs)])) {
-            $url_rule_type = Config::get('url_rule_type') ?: 3;
+            $url_rule_type = $url_rule_type ?: Config::get('url_rule_type') ?: 3;
             $url_rule_suffix = Config::get('url_rule_suffix') ?: '.html';
             
             if ($suffix === true) {
@@ -144,6 +144,15 @@ class Url
                     case '3': // 兼容模式
                         $qs = $qs ? "&" . $qs : '';
                         $link = SITE_INDEX_DIR . '/?' . $path . $suffix . $qs;
+                        break;
+                    case '4': // 静态
+                        if (! $isArticle) {
+                            $qs = $qs ? "&" . $qs : '';
+                            $link = '/index.php?' . $path . $suffix . $qs;
+                        } else {
+                            $qs = $qs ? "?" . $qs : '';
+                            $link = '/' . $path . $suffix . $qs;
+                        }
                         break;
                     default:
                         error('地址模式设置错误,请登录后台重新设置！');

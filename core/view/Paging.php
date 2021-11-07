@@ -52,7 +52,7 @@ class Paging
     }
 
     // 限制语句
-    public function limit($total = null, $morePageStr = false)
+    public function limit($total = null, $morePageStr = true)
     {
         // 起始数据调整
         if (! is_numeric($this->start) || $this->start < 1) {
@@ -81,12 +81,6 @@ class Paging
         // 获取当前页面
         $this->page = $this->page();
         
-        // 定义相关常量，用于方便模板引擎解析序号等计算和调用
-        define('ROWTOTAL', $this->rowTotal);
-        define('PAGECOUNT', $this->pageCount);
-        define('PAGE', $this->page);
-        define('PAGESIZE', $this->pageSize);
-        
         // 注入分页模板变量
         $this->assign($morePageStr);
         
@@ -106,7 +100,7 @@ class Paging
     }
 
     // 注入页面相关信息,用于模板调用，如：{$pagebar}调用分页条
-    private function assign($morePageStr = false)
+    private function assign($morePageStr = true)
     {
         assign('pagebar', $this->pageBar());
         if ($morePageStr) {
@@ -120,6 +114,9 @@ class Paging
             assign('pagestatus', $this->pageStatus()); // 注入分页状态
             assign('pagenumbar', $this->pageNumBar()); // 注入数字
             assign('pageselectbar', $this->pageSelectBar()); // 注入选择栏
+            
+            assign('page', $this->page()); // 分页
+            assign('pagesize', $this->pageSize); // 分页大小
         }
     }
 
@@ -144,12 +141,6 @@ class Paging
         if (! isset($this->preUrl) && URL) {
             $url = parse_url(URL);
             $path = preg_replace('/\/page\/[0-9]+/i', '', $url['path']);
-            if (defined('CMS_PAGE') && CMS_PAGE == true) { // 使用CMS分页时去除扩展
-                $url_rule_suffix = Config::get('url_rule_suffix');
-                if (! ! $pos = strripos($path, $url_rule_suffix)) {
-                    $path = substr($path, 0, $pos);
-                }
-            }
             $this->preUrl = $path;
         }
         return $this->preUrl;
@@ -159,67 +150,44 @@ class Paging
     private function buildPath($page)
     {
         if ($page) {
-            if (defined('CMS_PAGE') && CMS_PAGE == true) {
+            
+            if (! ! $pagelink = get_var('pagelink')) {
+                $qs = defined('MAKEHTML') ? '' : query_string('p,s,page');
                 $url_rule_type = Config::get('url_rule_type') ?: 3;
-                $url_rule_suffix = Config::get('url_rule_suffix') ?: '.html';
-                $url_break_char = Config::get('url_break_char') ?: '_';
-                $url_rule_sort_suffix = '/';
+                $str = ($url_rule_type == 3 && $pagelink != SITE_INDEX_DIR . '/') ? "&" : "?";
                 
-                if ($url_rule_type == 1 || $url_rule_type == 2) {
-                    if (defined('CMS_PAGE_CUSTOM')) { // 去分页参数
-                        $prepath = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', '$1', rtrim($this->getPreUrl(), '/'));
+                // 让在静态时支持分页，走动态入口
+                $index = '';
+                if (($url_rule_type == 4)) {
+                    if ($pagelink == SITE_INDEX_DIR . '/') {
+                        $index = SITE_INDEX_DIR . '/index.php';
                     } else {
-                        $prepath = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', '$1$2', rtrim($this->getPreUrl(), '/'));
-                    }
-                    if ($prepath) { // 非首页分页
-                        if ($page == 1) { // 第一页处理
-                            $path = $prepath . $url_rule_sort_suffix . query_string('p,s');
-                        } else {
-                            $path = $prepath . $url_break_char . $page . $url_rule_sort_suffix . query_string('p,s');
-                        }
-                    } else { // 首页分页
-                        $path = ($page == 1) ? SITE_INDEX_DIR . '/' : '?page=' . $page;
+                        $index = SITE_INDEX_DIR . '/index.php?';
+                        $str = '&';
                     }
                 } else {
-                    if ($url_rule_type == 3 && isset($_SERVER["QUERY_STRING"]) && $qs = $_SERVER["QUERY_STRING"]) {
-                        parse_str($qs, $output);
-                        unset($output['page']);
-                        
-                        if ($output && ! current($output)) {
-                            $path_qs = key($output); // 第一个参数为路径信息，注意PHP数组会自动将点转换下划线
-                            unset($output[$path_qs]); // 去除路径参数
-                                                      
-                            // 去后缀扩展
-                            $temp_suffix = substr($url_rule_suffix, 1);
-                            if (! ! $pos = strripos($path_qs, '_' . $temp_suffix)) {
-                                $path = substr($path_qs, 0, $pos); // 去扩展
-                            } else {
-                                $path = $path_qs;
-                            }
-                            
-                            // 去除原分页参数
-                            if (defined('CMS_PAGE_CUSTOM')) {
-                                $path = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', "$1", rtrim($path, '/'));
-                            } else {
-                                $path = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', "$1$2", rtrim($path, '/'));
-                            }
-                            
-                            // 第一页链接处理
-                            if ($page == 1) {
-                                $path = SITE_INDEX_DIR . '/?' . $path . $url_rule_sort_suffix;
-                            } else {
-                                $path = SITE_INDEX_DIR . '/?' . $path . $url_break_char . $page . $url_rule_sort_suffix;
-                            }
-                            
-                            // 附加参数
-                            if (! ! $qs = http_build_query($output)) {
-                                $path = rtrim($path, '/') . '&' . $qs;
-                            }
-                        }
+                    $index = '/';
+                }
+                
+                if ($page == 1) {
+                    if (! ! $qs) {
+                        $path = $pagelink . $str . $qs;
+                    } else {
+                        $path = $pagelink;
                     }
-                    
-                    if (! $path) { // 转基本分页模式
-                        return $this->buildBasicPage($page);
+                } else {
+                    if (get_var('listpage')) {
+                        if (! ! $qs) {
+                            $path = rtrim($pagelink, '/') . '_' . $page . '/' . $str . $qs;
+                        } else {
+                            $path = rtrim($pagelink, '/') . '_' . $page . '/';
+                        }
+                    } else {
+                        if (! ! $qs) {
+                            $path = $index . ltrim($pagelink, '/') . $str . $qs . '&page=' . $page;
+                        } else {
+                            $path = $index . ltrim($pagelink, '/') . $str . 'page=' . $page;
+                        }
                     }
                 }
                 return $path;
@@ -244,15 +212,15 @@ class Paging
         
         if ($page == 1) {
             if ($qs) {
-                return $this->getPreUrl() . '?' . $qs;
+                return '?' . $qs;
             } else {
-                return $this->getPreUrl();
+                return;
             }
         } else {
             if ($qs) {
-                return $this->getPreUrl() . '?' . $qs . '&page=' . $page;
+                return '?' . $qs . '&page=' . $page;
             } else {
-                return $this->getPreUrl() . '?page=' . $page;
+                return '?page=' . $page;
             }
         }
     }

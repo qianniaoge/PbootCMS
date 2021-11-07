@@ -49,7 +49,7 @@ function homeurl($url, $suffix = null, $qs = null)
 function error($string, $jump_url = null, $time = 2)
 {
     @ob_clean();
-    http_response_code(404);
+    // http_response_code(404);
     if (! $string)
         $string = '未知错误！';
     

@@ -914,79 +914,27 @@ class ParserController extends Controller
                 }
                 
                 $url_rule_type = $this->config('url_rule_type') ?: 3;
-                $url_rule_suffix = $this->config('url_rule_suffix') ?: '.html';
-                $url_break_char = $this->config('url_break_char') ?: '_';
-                $url_rule_sort_suffix = '/';
+                $str = ($url_rule_type == 3 && $this->getVar('pagelink') != SITE_INDEX_DIR . '/') ? "&" : "?";
+                $qs = defined('MAKEHTML') ? '' : query_string('p,s,page,' . $field);
+                $pagelink = $this->getVar('pagelink');
                 
-                // 附加后缀及参数
-                if ($url_rule_type == 1 || $url_rule_type == 2) {
-                    // 获取地址路径
-                    $url = parse_url(URL);
-                    
-                    // 避免非根目录首页筛选问题
-                    if (trim($url['path'], '/') == trim(SITE_DIR, '/')) {
-                        $url_rule_sort_suffix = '/';
-                    }
-                    
-                    $path = preg_replace('/\/page\/[0-9]+/', '', $url['path']); // 去除路径方式分页
-                                                                                
-                    // 去后缀扩展
-                    if (! ! $pos = strripos($path, $url_rule_suffix)) {
-                        $path = substr($path, 0, $pos);
-                    }
-                    
-                    // 去路径分页，回到首页
-                    if (defined('CMS_PAGE_CUSTOM')) {
-                        $path = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', '$1', rtrim($path, '/'));
+                // 让在静态时支持筛选，走动态入口
+                $index = '';
+                if (($url_rule_type == 4)) {
+                    if ($pagelink == SITE_INDEX_DIR . '/') {
+                        $index = SITE_INDEX_DIR . '/index.php';
                     } else {
-                        $path = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', '$1$2', rtrim($path, '/'));
+                        $index = SITE_INDEX_DIR . '/index.php?';
+                        $str = '&';
                     }
-                    
-                    // 拼接地址
-                    $path .= $url_rule_sort_suffix . query_string('p,s,' . $field);
-                } elseif ($url_rule_type == 3) {
-                    $output = array();
-                    if (isset($_SERVER["QUERY_STRING"]) && ! ! $qs = $_SERVER["QUERY_STRING"]) {
-                        parse_str($qs, $output);
-                        unset($output['page']); // 去除字符串方式分页，回到第一页
-                        unset($output['p']); // 去除保留参数
-                        unset($output['s']); // 去除保留参数
-                        unset($output[$field]); // 不筛选该字段
-                        
-                        if ($output && ! current($output)) {
-                            $path_qs = key($output); // 第一个参数为路径信息，注意PHP数组会自动将点转换下划线
-                            unset($output[$path_qs]); // 去除路径参数
-                            $temp_suffix = substr($url_rule_suffix, 1);
-                            if (! ! $pos = strripos($path_qs, '_' . $temp_suffix)) {
-                                $path = substr($path_qs, 0, $pos); // 去扩展
-                            } else {
-                                $path = $path_qs;
-                            }
-                            
-                            // 去除原分页参数
-                            if (defined('CMS_PAGE_CUSTOM')) {
-                                $path = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', "$1", rtrim($path, '/'));
-                            } else {
-                                $path = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', "$1$2", rtrim($path, '/'));
-                            }
-                            
-                            $path = SITE_INDEX_DIR . '/?' . $path . $url_rule_sort_suffix;
-                        } else {
-                            $path = '';
-                        }
-                        
-                        $qs = http_build_query($output);
-                        
-                        if ($path && $qs) { // 重组地址
-                            $path = rtrim($path, '/') . '/&' . $qs;
-                        } elseif ($qs) {
-                            $path = SITE_INDEX_DIR . '/?' . $qs;
-                        } elseif (! $path) {
-                            $path = SITE_INDEX_DIR . '/';
-                        }
-                    } else {
-                        $path = SITE_INDEX_DIR . '/';
-                    }
+                } else {
+                    $index = '/';
+                }
+                
+                if (! ! $qs) {
+                    $path = $index . ltrim($pagelink, '/') . $str . $qs;
+                } else {
+                    $path = $index . ltrim($pagelink, '/');
                 }
                 
                 // 如果有对本字段进行筛选，则不高亮
@@ -1008,68 +956,6 @@ class ParserController extends Controller
     {
         $pattern = '/\{pboot:select(\s+[^}]+)?\}([\s\S]*?)\{\/pboot:select\}/';
         $pattern2 = '/\[select:([\w]+)(\s+[^]]+)?\]/';
-        
-        // 参数处理
-        if (preg_match($pattern, $content)) {
-            
-            $url_rule_type = $this->config('url_rule_type') ?: 3;
-            $url_rule_suffix = $this->config('url_rule_suffix') ?: '.html';
-            $url_break_char = $this->config('url_break_char') ?: '_';
-            $url_rule_sort_suffix = '/';
-            
-            // 附加后缀及参数
-            if ($url_rule_type == 1 || $url_rule_type == 2) {
-                // 获取地址路径
-                $url = parse_url(URL);
-                
-                // 避免非根目录首页筛选问题
-                if (trim($url['path'], '/') == trim(SITE_DIR, '/')) {
-                    $url_rule_sort_suffix = '/';
-                }
-                
-                $path = preg_replace('/\/page\/[0-9]+/', '', $url['path']); // 去除路径方式分页，回到第一页
-                                                                            
-                // 去后缀扩展
-                if (! ! $pos = strripos($path, $url_rule_suffix)) {
-                    $path = substr($path, 0, $pos);
-                }
-                
-                // 去路径分页，回到首页
-                if (defined('CMS_PAGE_CUSTOM')) {
-                    $path = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', '$1', rtrim($path, '/'));
-                } else {
-                    $path = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', '$1$2', rtrim($path, '/'));
-                }
-            }
-            
-            $output = array();
-            if (isset($_SERVER["QUERY_STRING"]) && ! ! $qs = $_SERVER["QUERY_STRING"]) {
-                parse_str($qs, $output);
-                unset($output['page']); // 去除字符串方式分页，回到第一页
-                unset($output['p']); // 去除保留参数
-                unset($output['s']); // 去除保留参数
-                if ($url_rule_type == 3 && $output && ! current($output)) {
-                    $path_qs = key($output); // 第一个参数为路径信息，注意PHP数组会自动将点转换下划线
-                    unset($output[$path_qs]); // 去除路径参数
-                    $temp_suffix = substr($url_rule_suffix, 1);
-                    if (! ! $pos = strripos($path_qs, '_' . $temp_suffix)) {
-                        $path = substr($path_qs, 0, $pos); // 去扩展
-                    } else {
-                        $path = $path_qs;
-                    }
-                    
-                    // 去除原分页参数
-                    if (defined('CMS_PAGE_CUSTOM')) {
-                        $path = preg_replace('/(.*)' . $url_break_char . '[0-9]+$/', "$1", rtrim($path, '/'));
-                    } else {
-                        $path = preg_replace('/(.*)(' . $url_break_char . '[0-9]+)' . $url_break_char . '[0-9]+$/', "$1$2", rtrim($path, '/'));
-                    }
-                    $path = SITE_INDEX_DIR . '/?' . $path;
-                    $not_index = true;
-                }
-            }
-            $path = isset($path) ? $path . $url_rule_sort_suffix : SITE_INDEX_DIR . '/';
-        }
         
         // 执行匹配替换
         if (preg_match_all($pattern, $content, $matches)) {
@@ -1116,6 +1002,23 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 $key = 1;
+                $url_rule_type = $this->config('url_rule_type') ?: 3;
+                $pagelink = $this->getVar('pagelink');
+                $str = ($url_rule_type == 3 && $pagelink != SITE_INDEX_DIR . '/') ? "&" : "?";
+                
+                // 让在静态时支持筛选，走动态入口
+                $index = '';
+                if (($url_rule_type == 4)) {
+                    if ($pagelink == SITE_INDEX_DIR . '/') {
+                        $index = SITE_INDEX_DIR . '/index.php';
+                    } else {
+                        $index = SITE_INDEX_DIR . '/index.php?';
+                        $str = '&';
+                    }
+                } else {
+                    $index = '/';
+                }
+                
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
                     for ($j = 0; $j < $count2; $j ++) { // 循环替换数据
@@ -1134,13 +1037,11 @@ class ParserController extends Controller
                                 $one_html = str_replace($matches2[0][$j], get($field, 'vars'), $one_html);
                                 break;
                             case 'link':
-                                $qs = $output; // 需使用中间变量，避免多个链接相同问题
-                                $qs[$field] = $value;
-                                $qs = http_build_query($qs);
-                                if ($url_rule_type == 3 && $not_index) {
-                                    $link = rtrim($path, '/') . '/&' . $qs;
+                                $qs = defined('MAKEHTML') ? '' : query_string('p,s,page,' . $field);
+                                if ($qs) {
+                                    $link = $index . ltrim($pagelink, '/') . $str . $qs . '&' . $field . '=' . $value;
                                 } else {
-                                    $link = $path . '?' . $qs;
+                                    $link = $index . ltrim($pagelink, '/') . $str . $field . '=' . $value;
                                 }
                                 $one_html = str_replace($matches2[0][$j], $link, $one_html);
                                 break;
@@ -1423,7 +1324,7 @@ class ParserController extends Controller
                 }
                 
                 $out_html = '';
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2121,7 +2022,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2252,7 +2153,7 @@ class ParserController extends Controller
                 }
                 
                 $out_html = '';
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2378,7 +2279,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2488,7 +2389,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2652,7 +2553,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -2772,7 +2673,7 @@ class ParserController extends Controller
                 
                 $out_html = '';
                 
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -3154,7 +3055,7 @@ class ParserController extends Controller
                 }
                 
                 $out_html = '';
-                $pagenum = defined('PAGE') ? PAGE : 1;
+                $pagenum = $this->getVar('page') ? $this->getVar('page') : 1;
                 $key = ($pagenum - 1) * $num + 1;
                 foreach ($data as $value) { // 按查询数据条数循环
                     $one_html = $matches[2][$i];
@@ -3908,7 +3809,7 @@ class ParserController extends Controller
     }
 
     // 解析生成内容链接
-    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id = '', $contentfilename = '')
+    public function parserLink($type, $urlname, $pagetype, $scode, $sortfilename, $id = '', $contentfilename = '', $page = 1)
     {
         $url_break_char = $this->config('url_break_char') ?: '_';
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
@@ -3917,34 +3818,39 @@ class ParserController extends Controller
         if ($type == 1 || $pagetype == 'about') {
             $urlname = $urlname ?: 'about';
             if ($sortfilename) {
-                $link = Url::home($sortfilename);
+                $link = Url::home($sortfilename, null, null, true);
             } else {
-                $link = Url::home($urlname . $url_break_char . $scode);
+                $link = Url::home($urlname . $url_break_char . $scode, null, null, true);
             }
         } else {
             $urlname = $urlname ?: 'list';
             if ($pagetype == 'list') {
-                if ($sortfilename) {
-                    $link = Url::home($sortfilename);
+                if ($page > 1) {
+                    $pagestr = $url_break_char . $page;
                 } else {
-                    $link = Url::home($urlname . $url_break_char . $scode);
+                    $pagestr = '';
+                }
+                if ($sortfilename) {
+                    $link = Url::home($sortfilename . $pagestr, null, null, true);
+                } else {
+                    $link = Url::home($urlname . $url_break_char . $scode . $pagestr, null, null, true);
                 }
             } elseif ($pagetype == 'content') {
                 if ($url_rule_content_path) {
                     if ($contentfilename) {
-                        $link = Url::home($contentfilename, true);
+                        $link = Url::home($contentfilename, true, null, true);
                     } else {
-                        $link = Url::home($id, true);
+                        $link = Url::home($id, true, null, true);
                     }
                 } else {
                     if ($sortfilename && $contentfilename) {
-                        $link = Url::home($sortfilename . '/' . $contentfilename, true);
+                        $link = Url::home($sortfilename . '/' . $contentfilename, true, null, true);
                     } elseif ($sortfilename) {
-                        $link = Url::home($sortfilename . '/' . $id, true);
+                        $link = Url::home($sortfilename . '/' . $id, true, null, true);
                     } elseif ($contentfilename) {
-                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $contentfilename, true);
+                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $contentfilename, true, null, true);
                     } else {
-                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $id, true);
+                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $id, true, null, true);
                     }
                 }
             } else {
