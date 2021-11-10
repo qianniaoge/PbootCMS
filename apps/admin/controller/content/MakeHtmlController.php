@@ -76,9 +76,7 @@ class MakeHtmlController extends GetPageController
     private function makeSort($scode = null)
     {
         $scode = $scode ?: get('scode', 'var');
-        if ($scode === '') {
-            json(0, '请选择需要生成的栏目！');
-        } elseif ($scode === '0') {
+        if (! $scode) {
             $scodes = $this->model->getScodes('1,2');
         } else {
             $scodes = $this->model->getSubScodes($scode);
