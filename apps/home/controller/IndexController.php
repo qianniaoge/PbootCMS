@@ -96,6 +96,15 @@ class IndexController extends GetPageController
                     $spider = new SpiderController();
                     $spider->index();
                     break;
+                case 'do':
+                    $do = new DoController();
+                    if ($path_arr[1] == 'area') {
+                        $_GET['lg'] = $path_arr[3];
+                    } else {
+                        $_GET['id'] = $path_arr[3];
+                    }
+                    $do->{$path_arr[1]}();
+                    break;
                 default:
                     
                     $url_break_char = $this->config('url_break_char') ?: '_';

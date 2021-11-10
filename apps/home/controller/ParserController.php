@@ -180,7 +180,7 @@ class ParserController extends Controller
         // 记录蜘蛛爬行
         if ($this->config('spiderlog') !== '0') {
             if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
-                $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . URL) . "' async='async'></script>";
+                $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . $this->getVar('pagelink')) . "' async='async'></script>";
                 $content = preg_replace('/(<\/body>)/i', $spidercode . "\n$1", $content);
             } else {
                 $spider = new SpiderController(URL);
@@ -1363,7 +1363,7 @@ class ParserController extends Controller
         // 新增计数代码,非缓存方式，直接计数
         if ($this->config('tpl_html_cache')) {
             if (! isset($this->var['addvisits'])) {
-                $visits = "<script src='" . Url::get('home/Do/visits/id/' . $data->id) . "' async='async'></script>";
+                $visits = "<script src='" . Url::home('/Do/visits/id/' . $data->id) . "' async='async'></script>";
                 $content = preg_replace('/(<\/body>)/i', $visits . "\n$1", $content);
                 $this->var['addvisits'] = true;
             }
