@@ -256,6 +256,28 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
         return $file_ext . '格式的文件不允许上传！';
     }
     
+    $black = array(
+        'php',
+        'jsp',
+        'asp',
+        'vb',
+        'exe',
+        'sh',
+        'cmd',
+        'bat',
+        'vbs',
+        'phtml',
+        'class',
+        'php2',
+        'php3',
+        'php4',
+        'php5'
+    );
+    
+    if (in_array($file_ext, $black)) {
+        return $file_ext . '格式的文件不允许上传！';
+    }
+    
     $image = array(
         'png',
         'jpg',

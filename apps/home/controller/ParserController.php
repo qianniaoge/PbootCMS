@@ -254,8 +254,6 @@ class ParserController extends Controller
                             exit();
                         if (isset($data->{$matches[1][$i]})) {
                             $content = str_replace($matches[0][$i], $this->adjustLabelData($params, $data->{$matches[1][$i]}), $content);
-                        } else {
-                            $content = str_replace($matches[0][$i], '', $content);
                         }
                 }
             }
@@ -346,7 +344,6 @@ class ParserController extends Controller
                 $params = $this->parserParam($matches[2][$i]);
                 switch ($matches[1][$i]) {
                     case 'password': // 密码不允许显示
-                        $content = str_replace($matches[0][$i], '', $content);
                         break;
                     case 'registertime':
                         $content = str_replace($matches[0][$i], $this->adjustLabelData($params, $data->register_time), $content);
@@ -373,8 +370,6 @@ class ParserController extends Controller
                     default:
                         if (isset($data->{$matches[1][$i]})) {
                             $content = str_replace($matches[0][$i], $this->adjustLabelData($params, $data->{$matches[1][$i]}), $content);
-                        } else {
-                            $content = str_replace($matches[0][$i], '', $content);
                         }
                 }
             }
@@ -706,8 +701,6 @@ class ParserController extends Controller
                     default:
                         if (isset($sort->{$matches[1][$i]})) {
                             $content = str_replace($matches[0][$i], $this->adjustLabelData($params, $sort->{$matches[1][$i]}), $content);
-                        } else {
-                            $content = str_replace($matches[0][$i], '', $content);
                         }
                 }
             }
@@ -757,8 +750,6 @@ class ParserController extends Controller
                     case 'description': // 当前分类描述,使用全局
                         $content = str_replace($this->adjustLabelData($params, $matches[0][$i]), '{pboot:sitedescription}', $content);
                         break;
-                    default:
-                        $content = str_replace($matches[0][$i], '', $content);
                 }
             }
         }
@@ -1527,8 +1518,6 @@ class ParserController extends Controller
                             case 'title':
                                 $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, isset($picstitle[$vkey]) ? $picstitle[$vkey] : ''), $one_html);
                                 break;
-                            default:
-                                $one_html = str_replace($matches2[0][$j], '', $one_html);
                         }
                     }
                     $key ++;
@@ -2082,8 +2071,6 @@ class ParserController extends Controller
                             default:
                                 if (isset($value->{$matches2[1][$j]})) {
                                     $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, $value->{$matches2[1][$j]}), $one_html);
-                                } else {
-                                    $one_html = str_replace($matches2[0][$j], '', $one_html);
                                 }
                         }
                     }
@@ -2183,8 +2170,6 @@ class ParserController extends Controller
                             default:
                                 if (isset($value->{$matches2[1][$j]})) {
                                     $one_html = str_replace($matches2[0][$j], $this->adjustLabelData($params, $value->{$matches2[1][$j]}), $one_html);
-                                } else {
-                                    $one_html = str_replace($matches2[0][$j], '', $one_html);
                                 }
                         }
                     }
@@ -2491,8 +2476,6 @@ class ParserController extends Controller
             default:
                 if (isset($data->{$label})) {
                     $content = str_replace($search, $this->adjustLabelData($params, $data->{$label}), $content);
-                } else {
-                    $content = str_replace($search, '', $content);
                 }
         }
         return $content;
@@ -3210,7 +3193,7 @@ class ParserController extends Controller
                 }
                 
                 // 过滤特殊字符串
-                if (preg_match('/(\([\w\s\.]+\))|(\$_GET\[)|(\$_POST\[)|(\$_REQUEST\[)|(\$_COOKIE\[)|(\$_SESSION\[)|(file_put_contents)|(file_get_contents)|(fwrite)|(phpinfo)|(base64)|(`)|(shell_exec)|(eval)|(assert)|(system)|(exec)|(passthru)|(pcntl_exec)|(popen)|(proc_open)|(print_r)|(print)|(urldecode)|(chr)|(include)|(request)|(__FILE__)|(__DIR__)|(copy)|(call_user_)|(preg_replace)|(array_map)|(array_reverse)|(array_filter)|(getallheaders)|(get_headers)|(decode_string)|(htmlspecialchars)|(session_id)|(strrev)|(substr)/i', $matches[1][$i])) {
+                if (preg_match('/(\([\w\s\.]+\))|(\$_GET\[)|(\$_POST\[)|(\$_REQUEST\[)|(\$_COOKIE\[)|(\$_SESSION\[)|(file_put_contents)|(file_get_contents)|(fwrite)|(phpinfo)|(base64)|(`)|(shell_exec)|(eval)|(assert)|(system)|(exec)|(passthru)|(pcntl_exec)|(popen)|(proc_open)|(print_r)|(print)|(urldecode)|(chr)|(include)|(require)|(request)|(__FILE__)|(__DIR__)|(copy)|(call_user_)|(preg_replace)|(array_map)|(array_reverse)|(array_filter)|(getallheaders)|(get_headers)|(decode_string)|(htmlspecialchars)|(session_id)|(strrev)|(substr)/i', $matches[1][$i])) {
                     $danger = true;
                 }
                 
@@ -3552,8 +3535,6 @@ class ParserController extends Controller
             default:
                 if (isset($data->$label)) {
                     $content = str_replace($search, $this->adjustLabelData($params, $data->$label, $label), $content);
-                } elseif (strpos($label, 'ext_') === 0) {
-                    $content = str_replace($search, '', $content);
                 }
         }
         return $content;
@@ -3801,8 +3782,6 @@ class ParserController extends Controller
             default:
                 if (isset($data->$label)) {
                     $content = str_replace($search, $this->adjustLabelData($params, $data->$label), $content);
-                } elseif (strpos($label, 'ext_') === 0) {
-                    $content = str_replace($search, '', $content);
                 }
         }
         return $content;
