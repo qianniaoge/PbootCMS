@@ -20,7 +20,7 @@ class MakeHtmlController extends GetPageController
             
             // 检查开关状态
             if ($this->config('url_rule_type') != 4) {
-                json(0, '请先开启伪静态功能！');
+                json(0, '请先开启静态功能！');
             }
             
             // 设置基础信息
@@ -132,7 +132,7 @@ class MakeHtmlController extends GetPageController
     {
         // 检查开关状态
         if ($this->config('url_rule_type') != 4) {
-            json(0, '请先开启伪静态功能！');
+            json(0, '请先开启静态功能！');
         }
         
         $scode = get('scode', 'var') ?: "0";

@@ -130,7 +130,9 @@ class AdminController extends Controller
             '/admin/Index/ucenter', // 用户中心
             '/admin/Index/area', // 区域选择
             '/admin/Index/clearCache', // 清理缓存
-            '/admin/Index/upload' // 上传文件
+            '/admin/Index/upload', // 上传文件
+            '/admin/MakeHtml/Index',
+            '/admin/MakeHtml/getContentIds'
         );
         $levals = session('levels');
         $path1 = '/' . M . '/' . C;
