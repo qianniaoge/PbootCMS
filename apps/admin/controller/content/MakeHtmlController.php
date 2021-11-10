@@ -210,20 +210,6 @@ class MakeHtmlController extends GetPageController
         return $list_html;
     }
 
-    // 服务端API返回JSON数据
-    private static function json($code, $data)
-    {
-        $output['code'] = $code ?: 0;
-        $output['data'] = $data ?: array();
-        
-        if (PHP_VERSION >= 5.4) { // 中文不编码 5.4+
-            $option = JSON_UNESCAPED_UNICODE;
-        } else {
-            $option = JSON_HEX_TAG;
-        }
-        return json_encode($output, $option);
-    }
-
     // 设置公共信息
     private function setinfo()
     {

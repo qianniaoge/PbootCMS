@@ -728,6 +728,7 @@ class ParserModel extends Model
                 ->in('a.scode', $scodes)
                 ->where("a.acode='" . get_lg() . "'")
                 ->where('a.status=1')
+                ->where("a.outlink=''")
                 ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
                 ->order('a.id DESC')
                 ->find();
@@ -772,6 +773,7 @@ class ParserModel extends Model
                 ->in('a.scode', $scodes)
                 ->where("a.acode='" . get_lg() . "'")
                 ->where('a.status=1')
+                ->where("a.outlink=''")
                 ->where("a.date<'" . date('Y-m-d H:i:s') . "'")
                 ->order('a.id ASC')
                 ->find();

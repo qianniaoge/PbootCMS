@@ -11,7 +11,6 @@ namespace app\admin\controller\system;
 use core\basic\Controller;
 use app\admin\model\system\ConfigModel;
 use core\basic\Config;
-use app\admin\controller\content\MakeHtmlController;
 
 class ConfigController extends Controller
 {
