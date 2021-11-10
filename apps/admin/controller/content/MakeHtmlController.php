@@ -34,7 +34,7 @@ class MakeHtmlController extends GetPageController
                     break;
                 case '2':
                     $this->makeIndex();
-                    $this->makeSort(0);
+                    $this->makeSort("0");
                     $this->makeContont($data);
                     json(1, '生成全站成功');
                     break;
