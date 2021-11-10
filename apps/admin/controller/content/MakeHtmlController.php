@@ -14,42 +14,44 @@ use core\basic\Config;
 class MakeHtmlController extends GetPageController
 {
 
-    public function index()
+    public function index($type = null, $data = null)
     {
-        if (! ! $type = get('type', 'int')) {
+        if ($type || ! ! $type = get('type', 'int')) {
             
-            // 设置前台模板路径，避免后端调用问题
-            if (($tpl_dir = Config::get('tpl_dir')) && array_key_exists('home', $tpl_dir)) {
-                $this->assign('tplpath', ROOT_PATH . $tpl_dir['home']);
-            } else {
-                $this->assign('tplpath', APP_PATH . '/home/view');
+            // 检查开关状态
+            if ($this->config('url_rule_type') != 4) {
+                json(0, '请先开启伪静态功能！');
             }
             
-            // 定义当前操作为生成静态，后期动作判断
-            define('MAKEHTML', true);
+            // 设置基础信息
+            $this->setinfo();
             
             // 执行生成过程
             switch ($type) {
                 case '1':
                     $this->makeIndex();
-                    alert('生成首页成功', 1);
+                    json(1, '生成首页成功');
                     break;
                 case '2':
                     $this->makeIndex();
-                    $this->makeSort();
-                    $this->makeContont();
-                    alert('生成全站成功', 1);
+                    $this->makeSort(0);
+                    $this->makeContont($data);
+                    json(1, '生成全站成功');
                     break;
                 case '3':
-                    $this->makeSort();
-                    alert('生成栏目成功', 1);
+                    $this->makeSort($data);
+                    json(1, '生成栏目成功');
                     break;
                 case '4':
-                    $this->makeContont();
-                    alert('生成内容成功', 1);
+                    $this->makeContont($data);
+                    json(1, '生成内容成功');
+                    break;
+                case '5':
+                    $this->makeContont($data);
+                    json(1, '生成内容成功');
                     break;
                 default:
-                    alert('传递参数错误');
+                    json(0, '传递参数错误');
             }
         } else {
             $sort_model = model('admin.content.ContentSort');
@@ -60,20 +62,22 @@ class MakeHtmlController extends GetPageController
         }
     }
 
+    // 生成首页
     private function makeIndex()
     {
         $content = $this->getIndexPage();
         $path = ROOT_PATH . '/index.html';
         if (! file_put_contents($path, $content)) {
-            alert_back('首页生成出错！请检查目录是否有写入权限！');
+            json(0, '首页生成出错！请检查目录是否有写入权限！');
         }
     }
 
-    private function makeSort()
+    // 生成栏目
+    private function makeSort($scode = null)
     {
-        $scode = get('scode', 'var');
+        $scode = $scode ?: get('scode', 'var');
         if ($scode === '') {
-            alert_back('请选择需要生成的栏目！');
+            json(0, '请选择需要生成的栏目！');
         } elseif ($scode === '0') {
             $scodes = $this->model->getScodes('1,2');
         } else {
@@ -119,22 +123,48 @@ class MakeHtmlController extends GetPageController
             }
         }
         if ($err) {
-            alert_back($err);
+            json(0, $err);
         }
     }
 
-    private function makeContont()
+    // 获取内容id集
+    public function getContentIds($ajax = true)
     {
-        $scode = get('scode', 'var');
+        // 检查开关状态
+        if ($this->config('url_rule_type') != 4) {
+            json(0, '请先开启伪静态功能！');
+        }
+        
+        $scode = get('scode', 'var') ?: "0";
+        $ids = array();
         if ($scode === '') {
-            alert_back('请选择需要生成的栏目！');
+            json(0, '请选择需要生成的栏目！');
         } elseif ($scode === '0') {
             $scodes = $this->model->getScodes(2);
         } else {
             $scodes = $this->model->getSubScodes($scode);
         }
-        $ids = $this->model->getContentIds($scodes);
         
+        $where = "";
+        if ((! ! $date = get('date', 'var')) && get('type', 'int') == 5) {
+            $where = "substr(date,1,10)='" . $date . "'";
+        }
+        
+        $ids = $this->model->getContentIds($scodes, $where);
+        if ($ajax) {
+            json(1, $ids);
+        } else {
+            return $ids;
+        }
+    }
+
+    // 生成内容页
+    private function makeContont($ids = null)
+    {
+        $ids = $ids ?: get('ids', 'var') ?: $this->getContentIds(false);
+        if (! is_array($ids)) {
+            $ids = explode(',', $ids);
+        }
         $err = '';
         foreach ($ids as $value) {
             $data = $this->model->getContent($value);
@@ -147,12 +177,13 @@ class MakeHtmlController extends GetPageController
                 }
                 $content = $this->getContentPage($data);
                 if (! file_put_contents($path, $content)) {
-                    $err = '内容页面' . $content->id . '生成失败！请检查目录写入权限！';
+                    $err = '内容页面' . $data->id . '生成失败！请检查目录写入权限！';
+                    continue;
                 }
             }
         }
         if ($err) {
-            alert_back($err);
+            json(0, $err);
         }
     }
 
@@ -162,7 +193,7 @@ class MakeHtmlController extends GetPageController
         $list_html = '';
         foreach ($tree as $value) {
             if (get('scode') != $value->scode) { // 不显示本身，避免出现自身为自己的父节点
-                if ($ext_about && $value->type == 1) {
+                if (($ext_about && $value->type == 1) || $value->outlink != '') {
                     $list_html .= "<option value='{$value->scode}' disabled='disabled'>{$this->blank}{$value->name}</option>";
                 } else {
                     $list_html .= "<option value='{$value->scode}' >{$this->blank}{$value->name}</option>";
@@ -177,5 +208,32 @@ class MakeHtmlController extends GetPageController
         // 循环完后回归位置
         $this->blank = substr($this->blank, 0, - 6);
         return $list_html;
+    }
+
+    // 服务端API返回JSON数据
+    private static function json($code, $data)
+    {
+        $output['code'] = $code ?: 0;
+        $output['data'] = $data ?: array();
+        
+        if (PHP_VERSION >= 5.4) { // 中文不编码 5.4+
+            $option = JSON_UNESCAPED_UNICODE;
+        } else {
+            $option = JSON_HEX_TAG;
+        }
+        return json_encode($output, $option);
+    }
+
+    // 设置公共信息
+    private function setinfo()
+    {
+        // 设置前台模板路径，避免后端调用问题
+        if (($tpl_dir = Config::get('tpl_dir')) && array_key_exists('home', $tpl_dir)) {
+            $this->assign('tplpath', ROOT_PATH . $tpl_dir['home']);
+        } else {
+            $this->assign('tplpath', APP_PATH . '/home/view');
+        }
+        // 定义当前操作为生成静态，后期动作判断
+        define('MAKEHTML', true);
     }
 }

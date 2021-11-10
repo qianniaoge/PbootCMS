@@ -11,6 +11,7 @@ namespace app\admin\controller\system;
 use core\basic\Controller;
 use app\admin\model\system\ConfigModel;
 use core\basic\Config;
+use app\admin\controller\content\MakeHtmlController;
 
 class ConfigController extends Controller
 {
@@ -156,6 +157,15 @@ class ConfigController extends Controller
                     copy(ROOT_PATH . '/rewrite/.htaccess', ROOT_PATH . '/.htaccess');
                 }
             }
+        }
+        
+        // 非静态模式删除静态首页
+        if ($key == 'url_rule_type' && $value != 4) {
+            unlink(ROOT_PATH . '/index.html');
+        }
+        
+        if ($key == 'html_dir') {
+            $value = trim($value, '/');
         }
         
         // 模板目录修改

@@ -18,6 +18,7 @@
              <div class="layui-form-item">
                   <label class="layui-form-label">生成全站</label>
                   <button type="button" class="layui-btn make" data-type="2">立即生成全站</button>
+                  <span class="layui-word-aux">（内容多时勿使用！）</span>
              </div>
              
      		 <div class="layui-form-item">
@@ -39,8 +40,18 @@
 	                      {$sort_select2}
 	                  </select>
                   </div>
-                  <button type="button" class="layui-btn make" data-type="4">立即生成内容页</button>
+                  <button type="button" class="layui-btn makecontent" data-type="4">立即生成内容页</button>
              </div>
+             
+             <div class="layui-form-item">
+                   <label class="layui-form-label">按日期生成</label>
+                   <div class="layui-input-inline">
+                   	<input type="text" id="date" value="{fun=date('Y-m-d')}" readonly placeholder="请选择发布时间"  class="layui-input date">
+                   </div>
+                   <button type="button" class="layui-btn makecontent" data-type="5">立即按日期生成</button>
+              </div>
+             
+           
 
   	     </div>
 	   </div>
@@ -52,6 +63,7 @@
  $(".make").on("click",function(){
 	 var type=$(this).data("type");
 	 var scode=$(this).parents(".layui-form-item").find("select").val();
+	 var date=$("#date").val();
 	 
 	 var lyindex;
 	 layui.use('layer', function(){
@@ -70,7 +82,8 @@
    	  url: url,
    	  data:{
    		  type:type,
-   		  scode:scode
+   		  scode:scode,
+   		  date:date
    	  },
    	  dataType: 'json',
    	  success: function (response, status) {
@@ -78,8 +91,120 @@
    			 layer.close(lyindex);
       		 layer.msg(response.data, {icon: 1});
    		  }else{
-   			 layer.close(lyindex);
-   			 layer.msg(response.data, {icon: 5});
+   			layer.close(lyindex);
+   			layer.open({
+	  			  type: 0,
+	  			  title:'错误提示：',
+	  			  closeBtn:0,
+	  			  btn: ['确认'],
+	  			  content: response.data,
+	  			  yes: function(index, layero){
+	  				  layer.close(index); 
+	  			  }
+	  		 });
+   		  }
+        },
+        error:function(xhr,status,error){
+     	  layer.close(lyindex);
+       	  layer.msg("执行生成发生错误!", {icon: 5});
+        }
+   	});
+	
+ });
+ 
+ //生成内容页面，分别请求
+ $(".makecontent").on("click",function(){
+	 var type=$(this).data("type");
+	 var scode=$(this).parents(".layui-form-item").find("select").val();
+	 var date=$("#date").val();
+	 
+	 var lyindex;
+	 layui.use('layer', function(){
+		var layer = layui.layer;
+		lyindex = layer.open({
+			type: 1,
+			title:'温馨提示',
+			closeBtn:0,
+			content: '<div style="padding:20px 10px;"><img src="{APP_THEME_DIR}/layui/css/modules/layer/default/loading-0.gif"><span id="layer-content">开始生成...</span><div>' 
+		});
+	 });
+	
+	var url= "?p=/MakeHtml/getContentIds";
+	var url2= "?p=/MakeHtml/index";
+	$.ajax({
+   	  type: 'GET',
+   	  url: url,
+   	  data:{
+   		 type:type,
+   		 scode:scode,
+   		 date:date
+   	  },
+   	  dataType: 'json',
+   	  success: function (response, status) {
+   		  if(response.code==1){
+   			  var exe=0;
+   			  var len = response.data.length;
+   			  var err="";
+   			  if(len>0){
+	   			　$.each(response.data,function(index,obj){
+	   			 	$('#layer-content').text("正在生成文章"+obj+"！");
+	   			    setTimeout(function () { //延迟执行、避免文件太多卡死问题
+	   			    	var request=$.ajax({
+			   			   	  type: 'GET',
+			   			   	  url: url2,
+			   			   	  data:{
+			   			   	 	  type:type,
+			   			   		  ids:obj,
+			   			   	 	  date:date
+			   			   	  },
+			   			   	  dataType: 'json',
+			   			   	  success: function (response, status) {
+			   			   	 	 if(response.code==1){
+			   			   	 	 	$('#layer-content').text("生成文章"+obj+"成功！");
+			   			   	 	 }else{
+			   			   			$('#layer-content').text(response.data);
+			   			   			err += response.data+"<br>";
+			   			   	 	 }
+			   			   		 exe++;
+			   			   		 if(exe==len){
+			   			   			layer.close(lyindex);
+			   			   			if(err!=""){
+				   			   			layer.open({
+							  			  type: 0,
+							  			  title:'错误提示：',
+							  			  closeBtn:0,
+							  			  btn: ['确认'],
+							  			  content: err,
+							  			  yes: function(index, layero){
+							  				  layer.close(index); 
+							  			  }
+							  			});
+			   			   			}
+			   			   		 }
+			   			   	  },
+			  		          error:function(xhr,status,error){
+			   		     	  	  layer.close(lyindex);
+				   		       	  layer.msg("执行生成发生错误！", {icon: 5});
+				   		      }
+		   			   	  })
+	   				 }, index*200);
+	   			　})
+   			  }else{
+   				layer.close(lyindex); 
+   				layer.msg("没有查询到任何文章！", {icon: 5});
+   			  }
+   		  }else{
+   			layer.close(lyindex);
+   			layer.open({
+	  			  type: 0,
+	  			  title:'错误提示：',
+	  			  closeBtn:0,
+	  			  btn: ['确认'],
+	  			  content: response.data,
+	  			  yes: function(index, layero){
+	  				  layer.close(index); 
+	  			  }
+	  		 });
    		  }
         },
         error:function(xhr,status,error){

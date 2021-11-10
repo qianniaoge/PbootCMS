@@ -48,7 +48,7 @@ class ContentSortModel extends Model
             'LEFT'
         );
         
-        $result = parent::table('ay_content_sort a')->field('a.pcode,a.scode,a.name,b.type')
+        $result = parent::table('ay_content_sort a')->field('a.pcode,a.scode,a.name,b.type,a.outlink')
             ->join($join)
             ->where("a.acode='" . session('acode') . "'")
             ->order('a.pcode,a.sorting,a.id')

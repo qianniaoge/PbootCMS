@@ -108,8 +108,8 @@ class Parser
                     $inc_file = APP_PATH . '/' . substr($brr[$i], 0, $pos) . '/view/' . basename(self::$tplPath) . '/' . substr($brr[$i], $pos + 1);
                 } else {
                     if (M == 'home' || defined('MAKEHTML')) { // 前台适应模板子目录
-                        $htmldir = Config::get('tpl_html_dir') ? Config::get('tpl_html_dir') . '/' : '';
-                        $inc_file = self::$tplPath . '/' . $htmldir . $brr[$i];
+                        $tplhtmldir = Config::get('tpl_html_dir') ? Config::get('tpl_html_dir') . '/' : '';
+                        $inc_file = self::$tplPath . '/' . $tplhtmldir . $brr[$i];
                     } else {
                         $inc_file = self::$tplPath . '/' . $brr[$i];
                     }

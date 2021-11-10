@@ -918,6 +918,11 @@ class ParserController extends Controller
                 $qs = defined('MAKEHTML') ? '' : query_string('p,s,page,' . $field);
                 $pagelink = $this->getVar('pagelink');
                 
+                $htmldir = $this->config('html_dir') ? $this->config('html_dir') . '/' : '';
+                if ($htmldir) {
+                    $pagelink = preg_replace("{^\/" . $htmldir . "}", '', $pagelink);
+                }
+                
                 // 让在静态时支持筛选，走动态入口
                 $index = '';
                 if (($url_rule_type == 4)) {
@@ -1004,6 +1009,12 @@ class ParserController extends Controller
                 $key = 1;
                 $url_rule_type = $this->config('url_rule_type') ?: 3;
                 $pagelink = $this->getVar('pagelink');
+                
+                $htmldir = $this->config('html_dir') ? $this->config('html_dir') . '/' : '';
+                if ($htmldir) {
+                    $pagelink = preg_replace("{^\/" . $htmldir . "}", '', $pagelink);
+                }
+                
                 $str = ($url_rule_type == 3 && $pagelink != SITE_INDEX_DIR . '/') ? "&" : "?";
                 
                 // 让在静态时支持筛选，走动态入口
@@ -3814,38 +3825,43 @@ class ParserController extends Controller
         $url_break_char = $this->config('url_break_char') ?: '_';
         $url_rule_sort_suffix = $this->config('url_rule_sort_suffix') ? true : null;
         $url_rule_content_path = $this->config('url_rule_content_path') ? true : false;
+        $url_rule_type = $url_rule_type ?: $this->config('url_rule_type') ?: 3;
+        $htmldir = '';
+        if ($url_rule_type == 4) {
+            $htmldir = $this->config('html_dir') ? $this->config('html_dir') . '/' : '';
+        }
         
         if ($type == 1 || $pagetype == 'about') {
             $urlname = $urlname ?: 'about';
             if ($sortfilename) {
-                $link = Url::home($sortfilename, null, null, true);
+                $link = Url::home($htmldir . $sortfilename, null, null, true);
             } else {
-                $link = Url::home($urlname . $url_break_char . $scode, null, null, true);
+                $link = Url::home($htmldir . $urlname . $url_break_char . $scode, null, null, true);
             }
         } else {
             $urlname = $urlname ?: 'list';
             if ($pagetype == 'list') {
                 if ($sortfilename) {
-                    $link = Url::home($sortfilename, null, null, true);
+                    $link = Url::home($htmldir . $sortfilename, null, null, true);
                 } else {
-                    $link = Url::home($urlname . $url_break_char . $scode, null, null, true);
+                    $link = Url::home($htmldir . $urlname . $url_break_char . $scode, null, null, true);
                 }
             } elseif ($pagetype == 'content') {
                 if ($url_rule_content_path) {
                     if ($contentfilename) {
-                        $link = Url::home($contentfilename, true, null, true);
+                        $link = Url::home($htmldir . $contentfilename, true, null, true);
                     } else {
-                        $link = Url::home($id, true, null, true);
+                        $link = Url::home($htmldir . $id, true, null, true);
                     }
                 } else {
                     if ($sortfilename && $contentfilename) {
-                        $link = Url::home($sortfilename . '/' . $contentfilename, true, null, true);
+                        $link = Url::home($htmldir . $sortfilename . '/' . $contentfilename, true, null, true);
                     } elseif ($sortfilename) {
-                        $link = Url::home($sortfilename . '/' . $id, true, null, true);
+                        $link = Url::home($htmldir . $sortfilename . '/' . $id, true, null, true);
                     } elseif ($contentfilename) {
-                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $contentfilename, true, null, true);
+                        $link = Url::home($htmldir . $urlname . $url_break_char . $scode . '/' . $contentfilename, true, null, true);
                     } else {
-                        $link = Url::home($urlname . $url_break_char . $scode . '/' . $id, true, null, true);
+                        $link = Url::home($htmldir . $urlname . $url_break_char . $scode . '/' . $id, true, null, true);
                     }
                 }
             } else {

@@ -218,7 +218,9 @@ class ParserModel extends Model
             return;
         }
         $this->scodes[] = $scode;
-        $subs = parent::table('ay_content_sort')->where("pcode='$scode'")->column('scode');
+        $subs = parent::table('ay_content_sort')->where("pcode='$scode'")
+            ->where("outlink=''")
+            ->column('scode');
         if ($subs) {
             foreach ($subs as $value) {
                 $this->getSubScodes($value);
@@ -227,7 +229,7 @@ class ParserModel extends Model
         return $this->scodes;
     }
 
-    // 获取全部栏目编码
+    // 生成静态时，获取全部栏目编码
     public function getScodes($type)
     {
         $join = array(
@@ -235,15 +237,18 @@ class ParserModel extends Model
             'a.mcode=b.mcode',
             'LEFT'
         );
+        // 不包括外链
         return parent::table('ay_content_sort a')->join($join)
             ->in('b.type', $type)
+            ->where("outlink=''")
             ->column('scode');
     }
 
-    // 获取栏目全部内容ID
+    // 生成静态时，获取栏目全部内容ID
     public function getContentIds($scodes, $where = array())
     {
         return parent::table('ay_content')->in('scode', $scodes)
+            ->where("outlink=''")
             ->where($where)
             ->column('id');
     }

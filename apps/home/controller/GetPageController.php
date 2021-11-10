@@ -19,13 +19,13 @@ class GetPageController extends Controller
 
     protected $model;
 
-    protected $htmldir;
+    protected $tplhtmldir;
 
     public function __construct()
     {
         $this->parser = new ParserController();
         $this->model = new ParserModel();
-        $this->htmldir = $this->config('tpl_html_dir') ? $this->config('tpl_html_dir') . '/' : '';
+        $this->tplhtmldir = $this->config('tpl_html_dir') ? $this->config('tpl_html_dir') . '/' : '';
     }
 
     // 首页
@@ -33,7 +33,7 @@ class GetPageController extends Controller
     {
         $link = SITE_INDEX_DIR . '/';
         $this->assign('pagelink', $link);
-        $content = parent::parser($this->htmldir . 'index.html'); // 框架标签解析
+        $content = parent::parser($this->tplhtmldir . 'index.html'); // 框架标签解析
         $content = $this->parser->parserBefore($content); // CMS公共标签前置解析
         $content = str_replace('{pboot:pagetitle}', $this->config('index_title') ?: '{pboot:sitetitle}-{pboot:sitesubtitle}', $content);
         $content = str_replace('{pboot:pagelink}', $link, $content);
@@ -59,7 +59,7 @@ class GetPageController extends Controller
             $link = $this->parser->parserLink($sort->type, $sort->urlname, 'list', $sort->scode, $sort->filename, '', '');
             $this->assign('pagelink', $link); // 注入当前页面链接
             
-            $content = parent::parser($this->htmldir . $sort->listtpl); // 框架标签解析
+            $content = parent::parser($this->tplhtmldir . $sort->listtpl); // 框架标签解析
             $content = $this->parser->parserBefore($content); // CMS公共标签前置解析
             $pagetitle = $sort->title ? "{sort:title}" : "{sort:name}"; // 页面标题
             $content = str_replace('{pboot:pagetitle}', $this->config('list_title') ?: ($pagetitle . '-{pboot:sitetitle}-{pboot:sitesubtitle}'), $content);
@@ -92,7 +92,7 @@ class GetPageController extends Controller
             if ($sort->contenttpl) {
                 $this->checkPageLevel($sort->gcode, $sort->gtype, $sort->gnote); // 检查栏目权限
                 $this->checkPageLevel($data->gcode, $data->gtype, $data->gnote); // 检查内容权限
-                $content = parent::parser($this->htmldir . $sort->contenttpl); // 框架标签解析
+                $content = parent::parser($this->tplhtmldir . $sort->contenttpl); // 框架标签解析
                 $content = $this->parser->parserBefore($content); // CMS公共标签前置解析
                 $content = str_replace('{pboot:pagetitle}', $this->config('content_title') ?: '{content:title}-{sort:name}-{pboot:sitetitle}-{pboot:sitesubtitle}', $content);
                 $content = str_replace('{pboot:pagekeywords}', '{content:keywords}', $content);
@@ -130,7 +130,7 @@ class GetPageController extends Controller
             $link = $this->parser->parserLink($sort->type, $sort->urlname, 'list', $sort->scode, $sort->filename, '', '');
             $this->assign('pagelink', $link); // 注入当前页面链接
             $this->checkPageLevel($sort->gcode, $sort->gtype, $sort->gnote);
-            $content = parent::parser($this->htmldir . $sort->contenttpl); // 框架标签解析
+            $content = parent::parser($this->tplhtmldir . $sort->contenttpl); // 框架标签解析
             $content = $this->parser->parserBefore($content); // CMS公共标签前置解析
             $pagetitle = $sort->title ? "{sort:title}" : "{content:title}"; // 页面标题
             $content = str_replace('{pboot:pagetitle}', $this->config('about_title') ?: ($pagetitle . '-{pboot:sitetitle}-{pboot:sitesubtitle}'), $content);
